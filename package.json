@@ -1,0 +1,15 @@
+{
+  "name": "techswitch-site",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "build": "node scripts/build-blog.mjs",
+    "refresh": "node scripts/build-blog.mjs --feed",
+    "dev": "node scripts/serve.mjs 8788",
+    "deploy:preview": "npm run build && wrangler deploy",
+    "deploy": "npm run build && wrangler deploy --env production"
+  },
+  "devDependencies": {
+    "wrangler": "^4.0.0"
+  }
+}

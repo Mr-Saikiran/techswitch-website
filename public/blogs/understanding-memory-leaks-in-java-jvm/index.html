@@ -1,0 +1,83 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Understanding Memory Leaks in Java JVM: TechSwitch</title>
+<meta name="description" content="First of all Memory leak is not sweeping Unused objects, It is Sweeping referenced objects. Memory leak is a common memory issue that can result in an…">
+<link rel="canonical" href="https://techswitch.in/blogs/understanding-memory-leaks-in-java-jvm/">
+<link rel="icon" href="/img/upihub-icon.png">
+<link rel="alternate" type="application/rss+xml" title="TechSwitch blog" href="/blogs/rss.xml">
+<meta property="og:title" content="Understanding Memory Leaks in Java JVM: TechSwitch">
+<meta property="og:description" content="First of all Memory leak is not sweeping Unused objects, It is Sweeping referenced objects. Memory leak is a common memory issue that can result in an…">
+<meta property="og:url" content="https://techswitch.in/blogs/understanding-memory-leaks-in-java-jvm/">
+<meta property="og:image" content="https://cdn.hashnode.com/res/hashnode/image/upload/v1719598256318/375d4740-45ba-4cc3-a44e-1c06bda9e375.jpeg">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;500&family=Onest:wght@350;400;500&family=JetBrains+Mono&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/site.css">
+<script>document.documentElement.classList.add('js'); try { const m = localStorage.getItem('mode'); if (m === 'dark' || m === 'light') document.documentElement.dataset.mode = m; } catch {}</script>
+<script src="/mode.js" defer></script>
+</head>
+<body>
+<a class="skip" href="#main">Skip to content</a>
+<!-- chrome:nav -->
+<header class="mast">
+  <nav class="container mast__bar" aria-label="Main">
+    <ul class="mast__links mast__links--start">
+      <li><a href="/#work">work</a></li>
+      <li><a href="/#services">services</a></li>
+    </ul>
+    <a class="wordmark" href="/">techswitch</a>
+    <ul class="mast__links mast__links--end">
+      <li class="mast__blog"><a href="/blogs/">blogs</a></li>
+      <li><button class="mode" type="button" data-mode-toggle aria-pressed="false" hidden>dark</button></li>
+      <li class="mast__mail"><a class="btn btn--secondary btn--small" href="mailto:contact@techswitch.in?subject=TechSwitch%20enquiry">email us</a></li>
+    </ul>
+  </nav>
+</header>
+<!-- /chrome:nav -->
+<main id="main">
+  <article class="container article">
+    <header class="article__head">
+      <a class="link" href="/blogs/">all posts</a>
+      <h1>Understanding Memory Leaks in Java JVM</h1>
+      <div class="article__meta">
+        <time datetime="2019-09-06">6 sep 2019</time>
+        <span>1 min read</span>
+      </div>
+      <ul class="tags" aria-label="Tags"><li>java</li><li>memory leak</li><li>memory-management</li><li>jvm</li></ul>
+    </header>
+    <figure class="article__cover" data-slot="cover-understanding-memory-leaks-in-java-jvm" data-alt="Cover for Understanding Memory Leaks in Java JVM"><img src="https://cdn.hashnode.com/res/hashnode/image/upload/v1719598256318/375d4740-45ba-4cc3-a44e-1c06bda9e375.jpeg?w=1600&amp;auto=compress,format" alt="" width="1600" height="900" fetchpriority="high"></figure>
+    <div class="prose">
+<p>First of all Memory leak is not sweeping Unused objects, It is Sweeping referenced objects.</p>
+<p><img loading="lazy" src="https://cdn.hashnode.com/res/hashnode/image/upload/v1719429631709/261d105d-8f08-4660-bd51-634f609f5f32.jpeg" alt class="image--center mx-auto" /></p>
+<h3 id="heading-definition">Definition:</h3>
+<p><strong>Memory leak</strong> is a common memory issue that can result in an OutOfMemory error.<br />In Java, memory leaks can occur even with automatic Garbage Collection (GC).<br />GC removes objects that are no longer referenced.</p>
+<p>However, if an object is not used but still referenced, GC will not remove it, potentially causing memory leaks in the JVM.</p>
+<h3 id="heading-conclusion">Conclusion:</h3>
+<p>Understanding memory leaks in the Java JVM is crucial for maintaining optimal application performance. Despite Java's automatic Garbage Collection, memory leaks can still occur when objects that are no longer needed remain referenced. This can lead to an OutOfMemory error, causing the application to crash or behave unpredictably. By identifying and addressing these leaks, developers can ensure more efficient memory usage and improve the stability and reliability of their Java applications.</p>
+    </div>
+    <p class="article__back"><a class="link" href="/blogs/">back to all posts</a></p>
+  </article>
+</main>
+<!-- chrome:footer -->
+<footer class="foot">
+  <div class="container">
+    <a class="foot__mark" href="/">techswitch</a>
+    <ul class="foot__links">
+      <li><a href="/blogs/">blogs</a></li>
+      <li><a href="https://github.com/techswitch-c">github</a></li>
+      <li><a href="https://www.linkedin.com/company/techswitch-c">linkedin</a></li>
+      <li><a href="https://www.youtube.com/@tech_switch">youtube</a></li>
+      <li><a href="https://twitter.com/_techswitch_">x</a></li>
+      <li><a href="https://mr-saikiran.github.io/">founder</a></li>
+      <li><a href="/blogs/rss.xml">rss</a></li>
+    </ul>
+    <p class="foot__legal">&copy; 2026 TechSwitch, Andheri, Mumbai</p>
+  </div>
+</footer>
+<!-- /chrome:footer -->
+<script>document.querySelectorAll('[data-slot] img').forEach((i) => { if (i.complete && !i.naturalWidth) i.remove(); else i.addEventListener('error', () => i.remove(), { once: true }); });</script>
+</body>
+</html>

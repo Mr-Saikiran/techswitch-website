@@ -1,0 +1,133 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Beginner's Python: Unveiling Quirky and Useful Functions You Didn't know Existed: TechSwitch</title>
+<meta name="description" content="To pass the value for c, d, and e you will need to explicitly pass it as “key=value” named arguments: getuser() gets the current username:">
+<link rel="canonical" href="https://techswitch.in/blogs/beginners-python-unveiling-quirky-and-useful-functions-you-didnt-know-existed/">
+<link rel="icon" href="/img/upihub-icon.png">
+<link rel="alternate" type="application/rss+xml" title="TechSwitch blog" href="/blogs/rss.xml">
+<meta property="og:title" content="Beginner's Python: Unveiling Quirky and Useful Functions You Didn't know Existed: TechSwitch">
+<meta property="og:description" content="To pass the value for c, d, and e you will need to explicitly pass it as “key=value” named arguments: getuser() gets the current username:">
+<meta property="og:url" content="https://techswitch.in/blogs/beginners-python-unveiling-quirky-and-useful-functions-you-didnt-know-existed/">
+<meta property="og:image" content="https://cdn.hashnode.com/res/hashnode/image/upload/v1702497748432/c566cf16-0ace-4c05-aca9-4d41127f3921.jpeg">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;500&family=Onest:wght@350;400;500&family=JetBrains+Mono&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/site.css">
+<script>document.documentElement.classList.add('js'); try { const m = localStorage.getItem('mode'); if (m === 'dark' || m === 'light') document.documentElement.dataset.mode = m; } catch {}</script>
+<script src="/mode.js" defer></script>
+</head>
+<body>
+<a class="skip" href="#main">Skip to content</a>
+<!-- chrome:nav -->
+<header class="mast">
+  <nav class="container mast__bar" aria-label="Main">
+    <ul class="mast__links mast__links--start">
+      <li><a href="/#work">work</a></li>
+      <li><a href="/#services">services</a></li>
+    </ul>
+    <a class="wordmark" href="/">techswitch</a>
+    <ul class="mast__links mast__links--end">
+      <li class="mast__blog"><a href="/blogs/">blogs</a></li>
+      <li><button class="mode" type="button" data-mode-toggle aria-pressed="false" hidden>dark</button></li>
+      <li class="mast__mail"><a class="btn btn--secondary btn--small" href="mailto:contact@techswitch.in?subject=TechSwitch%20enquiry">email us</a></li>
+    </ul>
+  </nav>
+</header>
+<!-- /chrome:nav -->
+<main id="main">
+  <article class="container article">
+    <header class="article__head">
+      <a class="link" href="/blogs/">all posts</a>
+      <h1>Beginner's Python: Unveiling Quirky and Useful Functions You Didn't know Existed</h1>
+      <div class="article__meta">
+        <time datetime="2019-10-14">14 oct 2019</time>
+        <span>2 min read</span>
+      </div>
+      <ul class="tags" aria-label="Tags"><li>python tricks</li><li>python</li><li>python 3</li><li>python beginner</li><li>py</li><li>python tips</li></ul>
+    </header>
+    <figure class="article__cover" data-slot="cover-beginners-python-unveiling-quirky-and-useful-functions-you-didnt-know-existed" data-alt="Cover for Beginner's Python: Unveiling Quirky and Useful Functions You Didn't know Existed"><img src="https://cdn.hashnode.com/res/hashnode/image/upload/v1702497748432/c566cf16-0ace-4c05-aca9-4d41127f3921.jpeg?w=1600&amp;auto=compress,format" alt="" width="1600" height="900" fetchpriority="high"></figure>
+    <div class="prose">
+<h3 id="heading-1-function-to-make-a-noun-adjective-from-a-verb-or-an-adverb-from-a-noun-adjective">1. Function to make a noun (adjective) from a verb or an adverb from a noun (adjective)</h3>
+<pre tabindex="0"><code class="lang-python"><span class="hljs-function"><span class="hljs-keyword">def</span> <span class="hljs-title">verbing</span>(<span class="hljs-params">s</span>):</span>
+    returns iflen(s) &lt; <span class="hljs-number">3</span> elses + (<span class="hljs-string">'ing'</span>, <span class="hljs-string">'ly'</span>)[<span class="hljs-string">'ing'</span> ins]
+<span class="hljs-meta">&gt;&gt;&gt; </span>verbing(<span class="hljs-string">'help'</span>)
+helping
+<span class="hljs-meta">&gt;&gt;&gt; </span>verbing(<span class="hljs-string">'helping'</span>)
+helpingly
+</code></pre>
+<h3 id="heading-2-use-a-bare-asterisk-in-function-parameter-lists-to-force-the-caller-to-use-keyword-arguments-for-certain-parameters">2. use a bare “*” asterisk in function parameter lists to force the caller to use keyword arguments for certain parameters</h3>
+<pre tabindex="0"><code class="lang-python"><span class="hljs-meta">&gt;&gt;&gt; </span><span class="hljs-function"><span class="hljs-keyword">def</span> <span class="hljs-title">f</span>(<span class="hljs-params">a, b, *, c=<span class="hljs-string">'x'</span>, d=<span class="hljs-string">'y'</span>, e=<span class="hljs-string">'z'</span></span>):</span>
+<span class="hljs-meta">... </span>    <span class="hljs-keyword">return</span> <span class="hljs-string">'Hello'</span>
+</code></pre>
+<p>To pass the value for c, d, and e you will need to explicitly pass it as “key=value” named arguments:</p>
+<pre tabindex="0"><code class="lang-python"><span class="hljs-meta">&gt;&gt;&gt; </span>f(<span class="hljs-number">1</span>, <span class="hljs-number">2</span>, <span class="hljs-string">'p'</span>, <span class="hljs-string">'q'</span>, <span class="hljs-string">'v'</span>)
+TypeError: f() takes <span class="hljs-number">2</span> positional arguments but <span class="hljs-number">5</span> were given
+<span class="hljs-meta">&gt;&gt;&gt; </span>f(<span class="hljs-number">1</span>, <span class="hljs-number">2</span>, c=<span class="hljs-string">'p'</span>, d=<span class="hljs-string">'q'</span>,e=<span class="hljs-string">'v'</span>)
+<span class="hljs-string">'Hello'</span>
+</code></pre>
+<h3 id="heading-3-getpass-module-provides-a-platform-independent-way-to-enter-a-password-in-a-command-line-program-without-echoing">3. getpass module provides a platform-independent way to enter a password in a command-line program without echoing</h3>
+<pre tabindex="0"><code class="lang-python"><span class="hljs-meta">&gt;&gt;&gt; </span><span class="hljs-keyword">import</span> getpass
+<span class="hljs-meta">&gt;&gt;&gt; </span>password = getpass.getpass()
+Password:
+<span class="hljs-meta">&gt;&gt;&gt; </span>password
+<span class="hljs-string">'alohomora'</span>
+</code></pre>
+<p><code>getuser()</code> gets the current username:</p>
+<pre tabindex="0"><code class="lang-python"><span class="hljs-meta">&gt;&gt;&gt; </span>getpass.getuser()
+<span class="hljs-string">'sirius_black'</span>
+</code></pre>
+<h3 id="heading-4-if-the-fractional-component-of-the-number-is-halfway-between-two-integers-one-of-which-is-even-and-the-other-odd-then-round-returns-the-even-this-kind-of-rounding-is-called-rounding-to-even-or-bankers-rounding">4. if the fractional component of the number is halfway between two integers, one of which is even and the other odd, then <code>round()</code> returns the even. This kind of rounding is called rounding to even (or banker’s rounding)</h3>
+<pre tabindex="0"><code class="lang-python"><span class="hljs-meta">&gt;&gt;&gt; </span>round(<span class="hljs-number">0.5</span>)
+<span class="hljs-number">0</span>
+<span class="hljs-meta">&gt;&gt;&gt; </span>round(<span class="hljs-number">2.4</span>)
+<span class="hljs-number">2</span>
+<span class="hljs-meta">&gt;&gt;&gt; </span>round(<span class="hljs-number">2.5</span>)
+<span class="hljs-number">2</span>
+<span class="hljs-meta">&gt;&gt;&gt; </span>round(<span class="hljs-number">2.6</span>)
+<span class="hljs-number">3</span>
+<span class="hljs-meta">&gt;&gt;&gt; </span>round(<span class="hljs-number">3.5</span>)
+<span class="hljs-number">4</span>
+<span class="hljs-meta">&gt;&gt;&gt; </span>round(<span class="hljs-number">4.5</span>)
+<span class="hljs-number">4</span>
+</code></pre>
+<h3 id="heading-5-the-built-in-function-sysgetsizeof-returns-the-size-of-an-object-in-bytes-the-object-can-be-any-type-of-object">5. The built-in function <code>sys.getsizeof()</code> returns the size of an object in bytes. The object can be any type of object</h3>
+<pre tabindex="0"><code class="lang-python"><span class="hljs-meta">&gt;&gt;&gt; </span>sys.getsizeof(<span class="hljs-number">1</span>)
+<span class="hljs-number">28</span>
+<span class="hljs-meta">&gt;&gt;&gt; </span>sys.getsizeof([<span class="hljs-number">1</span>, <span class="hljs-number">2</span>, <span class="hljs-number">3</span>])
+<span class="hljs-number">88</span>
+<span class="hljs-meta">&gt;&gt;&gt; </span>sys.getsizeof(<span class="hljs-string">''</span>)
+<span class="hljs-number">49</span>
+<span class="hljs-meta">&gt;&gt;&gt; </span>sys.getsizeof(<span class="hljs-string">'P'</span>)
+<span class="hljs-number">50</span>
+<span class="hljs-meta">&gt;&gt;&gt; </span>sys.getsizeof(<span class="hljs-string">'Py'</span>)
+<span class="hljs-number">51</span>
+<span class="hljs-meta">&gt;&gt;&gt; </span>sys.getsizeof(<span class="hljs-string">'Python'</span>)
+<span class="hljs-number">55</span>
+</code></pre>
+    </div>
+    <p class="article__back"><a class="link" href="/blogs/">back to all posts</a></p>
+  </article>
+</main>
+<!-- chrome:footer -->
+<footer class="foot">
+  <div class="container">
+    <a class="foot__mark" href="/">techswitch</a>
+    <ul class="foot__links">
+      <li><a href="/blogs/">blogs</a></li>
+      <li><a href="https://github.com/techswitch-c">github</a></li>
+      <li><a href="https://www.linkedin.com/company/techswitch-c">linkedin</a></li>
+      <li><a href="https://www.youtube.com/@tech_switch">youtube</a></li>
+      <li><a href="https://twitter.com/_techswitch_">x</a></li>
+      <li><a href="https://mr-saikiran.github.io/">founder</a></li>
+      <li><a href="/blogs/rss.xml">rss</a></li>
+    </ul>
+    <p class="foot__legal">&copy; 2026 TechSwitch, Andheri, Mumbai</p>
+  </div>
+</footer>
+<!-- /chrome:footer -->
+<script>document.querySelectorAll('[data-slot] img').forEach((i) => { if (i.complete && !i.naturalWidth) i.remove(); else i.addEventListener('error', () => i.remove(), { once: true }); });</script>
+</body>
+</html>

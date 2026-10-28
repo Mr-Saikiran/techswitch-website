@@ -1,0 +1,141 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Part 2 - Artifacts Attestation for Builds in Github Actions: TechSwitch</title>
+<meta name="description" content="Boost build's supply chain security by adding artifact attestations in Github Actions">
+<link rel="canonical" href="https://techswitch.in/blogs/part-2-artifacts-attestation-for-builds-in-github-actions/">
+<link rel="icon" href="/img/upihub-icon.png">
+<link rel="alternate" type="application/rss+xml" title="TechSwitch blog" href="/blogs/rss.xml">
+<meta property="og:title" content="Part 2 - Artifacts Attestation for Builds in Github Actions: TechSwitch">
+<meta property="og:description" content="Boost build's supply chain security by adding artifact attestations in Github Actions">
+<meta property="og:url" content="https://techswitch.in/blogs/part-2-artifacts-attestation-for-builds-in-github-actions/">
+<meta property="og:image" content="https://cdn.hashnode.com/res/hashnode/image/upload/v1719431048546/3a71e2da-53f9-4e41-8aba-4bd5ff2e33a1.jpeg">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;500&family=Onest:wght@350;400;500&family=JetBrains+Mono&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/site.css">
+<script>document.documentElement.classList.add('js'); try { const m = localStorage.getItem('mode'); if (m === 'dark' || m === 'light') document.documentElement.dataset.mode = m; } catch {}</script>
+<script src="/mode.js" defer></script>
+</head>
+<body>
+<a class="skip" href="#main">Skip to content</a>
+<!-- chrome:nav -->
+<header class="mast">
+  <nav class="container mast__bar" aria-label="Main">
+    <ul class="mast__links mast__links--start">
+      <li><a href="/#work">work</a></li>
+      <li><a href="/#services">services</a></li>
+    </ul>
+    <a class="wordmark" href="/">techswitch</a>
+    <ul class="mast__links mast__links--end">
+      <li class="mast__blog"><a href="/blogs/">blogs</a></li>
+      <li><button class="mode" type="button" data-mode-toggle aria-pressed="false" hidden>dark</button></li>
+      <li class="mast__mail"><a class="btn btn--secondary btn--small" href="mailto:contact@techswitch.in?subject=TechSwitch%20enquiry">email us</a></li>
+    </ul>
+  </nav>
+</header>
+<!-- /chrome:nav -->
+<main id="main">
+  <article class="container article">
+    <header class="article__head">
+      <a class="link" href="/blogs/">all posts</a>
+      <h1>Part 2 - Artifacts Attestation for Builds in Github Actions</h1>
+      <div class="article__meta">
+        <time datetime="2023-11-03">3 nov 2023</time>
+        <span>2 min read</span>
+      </div>
+      <ul class="tags" aria-label="Tags"><li>github-actions</li><li>security</li><li>attestation</li><li>actions</li><li>workflow</li><li>deployment</li><li>pipelines</li><li>devsecops</li></ul>
+    </header>
+    <figure class="article__cover" data-slot="cover-part-2-artifacts-attestation-for-builds-in-github-actions" data-alt="Cover for Part 2 - Artifacts Attestation for Builds in Github Actions"><img src="https://cdn.hashnode.com/res/hashnode/image/upload/v1719431048546/3a71e2da-53f9-4e41-8aba-4bd5ff2e33a1.jpeg?w=1600&amp;auto=compress,format" alt="" width="1600" height="900" fetchpriority="high"></figure>
+    <div class="prose">
+<p>Artifact attestations help boost your build's supply chain security by showing where and how your software was created.</p>
+<p>In Github Actions we can acheive this using <code>actions/attest-build-provenance</code></p>
+<ol>
+<li>First add permission to your workflows / re-usable workflows with <code>attestations: write</code></li>
+</ol>
+<pre tabindex="0"><code class="lang-yaml"><span class="hljs-attr">permissions:</span>
+  <span class="hljs-attr">id-token:</span> <span class="hljs-string">write</span>
+  <span class="hljs-attr">contents:</span> <span class="hljs-string">read</span>
+  <span class="hljs-attr">attestations:</span> <span class="hljs-string">write</span>
+</code></pre>
+<h3 id="heading-optional-with-maven-builds">(optional) with Maven Builds</h3>
+<p>need to specify the jar that would be generated during the maven build with exact path. in my case it is <code>target/*.jar</code> We can also add the name to attestation.</p>
+<pre tabindex="0"><code class="lang-yaml">    <span class="hljs-bullet">-</span> <span class="hljs-attr">name:</span> <span class="hljs-string">Build</span> <span class="hljs-string">with</span> <span class="hljs-string">Maven</span>
+      <span class="hljs-attr">shell:</span> <span class="hljs-string">bash</span>
+      <span class="hljs-attr">run:</span> <span class="hljs-string">mvn</span> <span class="hljs-string">--batch-mode</span> <span class="hljs-string">--update-snapshots</span> <span class="hljs-string">-DskipTests</span> <span class="hljs-string">package</span>    
+
+    <span class="hljs-bullet">-</span> <span class="hljs-attr">name:</span> <span class="hljs-string">Attest</span> <span class="hljs-string">Artifacts</span>
+      <span class="hljs-attr">uses:</span> <span class="hljs-string">actions/attest-build-provenance@v1.3.2</span>
+      <span class="hljs-attr">with:</span>
+        <span class="hljs-attr">subject-path:</span> <span class="hljs-string">'target/*.jar'</span>
+        <span class="hljs-attr">subject-name:</span> <span class="hljs-string">${{</span> <span class="hljs-string">inputs.container-name</span> <span class="hljs-string">}}-attestation</span>
+</code></pre>
+<ol start="2">
+<li><h1 id="heading-with-docker-builds">with Docker builds</h1>
+</li>
+</ol>
+<p>Similarly, you can ensure that your Docker artifacts are properly attested, thereby enhancing the security and integrity of your build process. This approach helps in maintaining a robust supply chain security by providing verifiable evidence of how and where your Docker images were created.</p>
+<pre tabindex="0"><code class="lang-yaml">    <span class="hljs-bullet">-</span> <span class="hljs-attr">name:</span> <span class="hljs-string">Docker</span> <span class="hljs-string">build-push</span>
+      <span class="hljs-attr">id:</span> <span class="hljs-string">docker-build</span>
+      <span class="hljs-attr">uses:</span> <span class="hljs-string">docker/build-push-action@v6</span>
+      <span class="hljs-attr">with:</span>
+        <span class="hljs-attr">context:</span> <span class="hljs-string">.</span>
+        <span class="hljs-attr">push:</span> <span class="hljs-literal">true</span>
+        <span class="hljs-attr">tags:</span> <span class="hljs-string">|
+          ${{ inputs.acr-url }}/${{ inputs.container-name }}:latest
+</span>        <span class="hljs-comment"># cache-from: type=registry,ref=${{ inputs.acr-url }}/${{ env.containerName }}:buildcache</span>
+        <span class="hljs-comment"># cache-to: type=registry,ref=${{ inputs.acr-url }}/${{ env.containerName }}:buildcache,mode=max</span>
+        <span class="hljs-attr">cache-from:</span> <span class="hljs-string">type=gha</span>
+        <span class="hljs-attr">cache-to:</span> <span class="hljs-string">type=gha,mode=max</span>   
+
+    <span class="hljs-bullet">-</span> <span class="hljs-attr">name:</span> <span class="hljs-string">Attest</span> <span class="hljs-string">Docker</span> <span class="hljs-string">build</span>
+      <span class="hljs-attr">uses:</span> <span class="hljs-string">actions/attest-build-provenance@v1.3.2</span>
+      <span class="hljs-attr">id:</span> <span class="hljs-string">attest</span>
+      <span class="hljs-attr">with:</span>
+        <span class="hljs-attr">subject-name:</span> <span class="hljs-string">${{</span> <span class="hljs-string">inputs.acr-url</span> <span class="hljs-string">}}/${{</span> <span class="hljs-string">inputs.container-name</span> <span class="hljs-string">}}</span>
+        <span class="hljs-attr">subject-digest:</span> <span class="hljs-string">${{</span> <span class="hljs-string">steps.docker-build.outputs.digest</span> <span class="hljs-string">}}</span>
+        <span class="hljs-attr">push-to-registry:</span> <span class="hljs-literal">true</span>
+</code></pre>
+<p>And by just Generating these attestations doesn’t boost security.</p>
+<ol start="3">
+<li>You need to verify them for it to actually make a difference. Here is an example how this can be verified</li>
+</ol>
+<pre tabindex="0"><code class="lang-yaml">    <span class="hljs-bullet">-</span> <span class="hljs-attr">name:</span> <span class="hljs-string">Verify</span> <span class="hljs-string">OCI</span> <span class="hljs-string">image</span>
+      <span class="hljs-attr">shell:</span> <span class="hljs-string">bash</span>
+      <span class="hljs-attr">env:</span>
+        <span class="hljs-attr">GH_TOKEN:</span> <span class="hljs-string">${{</span> <span class="hljs-string">inputs.github-token</span> <span class="hljs-string">}}</span>
+      <span class="hljs-attr">run:</span> <span class="hljs-string">|</span>
+        <span class="hljs-string">gh</span> <span class="hljs-string">attestation</span> <span class="hljs-string">verify</span> <span class="hljs-string">oci://${{</span> <span class="hljs-string">inputs.acr-url</span> <span class="hljs-string">}}/${{</span> <span class="hljs-string">inputs.container-name</span> <span class="hljs-string">}}:latest</span> <span class="hljs-string">--owner</span> <span class="hljs-string">"$GITHUB_REPOSITORY_OWNER"</span>
+</code></pre>
+<p>You will see a detailed summary after the workflow execution is complete. it will show the status of the Docker build and push actions, indicating whether the image was successfully built and pushed to the specified container registry.</p>
+<p>Additionally, it will include information about the attestation process, confirming whether the build provenance was properly attested and pushed to the registry.</p>
+<p>Finally, the summary will display the results of the verification step, showing whether the OCI image was successfully verified using the provided GitHub token. This comprehensive summary helps ensure that each step of the workflow was executed correctly and provides valuable insights into the overall process.</p>
+<p><img loading="lazy" src="https://cdn.hashnode.com/res/hashnode/image/upload/v1719430534520/617391ed-b5ca-49d1-86a9-4047c5e140a2.png" alt class="image--center mx-auto" /></p>
+<p>By clicking on the Attestation URL, you will see detailed information.</p>
+<p><img loading="lazy" src="https://cdn.hashnode.com/res/hashnode/image/upload/v1719430672824/d084765c-49bb-493e-8cce-76b5e6a0f298.png" alt class="image--center mx-auto" /></p>
+    </div>
+    <p class="article__back"><a class="link" href="/blogs/">back to all posts</a></p>
+  </article>
+</main>
+<!-- chrome:footer -->
+<footer class="foot">
+  <div class="container">
+    <a class="foot__mark" href="/">techswitch</a>
+    <ul class="foot__links">
+      <li><a href="/blogs/">blogs</a></li>
+      <li><a href="https://github.com/techswitch-c">github</a></li>
+      <li><a href="https://www.linkedin.com/company/techswitch-c">linkedin</a></li>
+      <li><a href="https://www.youtube.com/@tech_switch">youtube</a></li>
+      <li><a href="https://twitter.com/_techswitch_">x</a></li>
+      <li><a href="https://mr-saikiran.github.io/">founder</a></li>
+      <li><a href="/blogs/rss.xml">rss</a></li>
+    </ul>
+    <p class="foot__legal">&copy; 2026 TechSwitch, Andheri, Mumbai</p>
+  </div>
+</footer>
+<!-- /chrome:footer -->
+<script>document.querySelectorAll('[data-slot] img').forEach((i) => { if (i.complete && !i.naturalWidth) i.remove(); else i.addEventListener('error', () => i.remove(), { once: true }); });</script>
+</body>
+</html>

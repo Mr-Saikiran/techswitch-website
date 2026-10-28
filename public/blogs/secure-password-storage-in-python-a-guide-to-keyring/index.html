@@ -1,0 +1,115 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Secure Password Storage in Python: A Guide to Keyring: TechSwitch</title>
+<meta name="description" content="Python keyring makes system keyring access simple and secure.">
+<link rel="canonical" href="https://techswitch.in/blogs/secure-password-storage-in-python-a-guide-to-keyring/">
+<link rel="icon" href="/img/upihub-icon.png">
+<link rel="alternate" type="application/rss+xml" title="TechSwitch blog" href="/blogs/rss.xml">
+<meta property="og:title" content="Secure Password Storage in Python: A Guide to Keyring: TechSwitch">
+<meta property="og:description" content="Python keyring makes system keyring access simple and secure.">
+<meta property="og:url" content="https://techswitch.in/blogs/secure-password-storage-in-python-a-guide-to-keyring/">
+<meta property="og:image" content="https://cdn.hashnode.com/res/hashnode/image/upload/v1719426251948/f62ef4af-bb37-49c7-91e7-a56933e461f3.jpeg">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;500&family=Onest:wght@350;400;500&family=JetBrains+Mono&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/site.css">
+<script>document.documentElement.classList.add('js'); try { const m = localStorage.getItem('mode'); if (m === 'dark' || m === 'light') document.documentElement.dataset.mode = m; } catch {}</script>
+<script src="/mode.js" defer></script>
+</head>
+<body>
+<a class="skip" href="#main">Skip to content</a>
+<!-- chrome:nav -->
+<header class="mast">
+  <nav class="container mast__bar" aria-label="Main">
+    <ul class="mast__links mast__links--start">
+      <li><a href="/#work">work</a></li>
+      <li><a href="/#services">services</a></li>
+    </ul>
+    <a class="wordmark" href="/">techswitch</a>
+    <ul class="mast__links mast__links--end">
+      <li class="mast__blog"><a href="/blogs/">blogs</a></li>
+      <li><button class="mode" type="button" data-mode-toggle aria-pressed="false" hidden>dark</button></li>
+      <li class="mast__mail"><a class="btn btn--secondary btn--small" href="mailto:contact@techswitch.in?subject=TechSwitch%20enquiry">email us</a></li>
+    </ul>
+  </nav>
+</header>
+<!-- /chrome:nav -->
+<main id="main">
+  <article class="container article">
+    <header class="article__head">
+      <a class="link" href="/blogs/">all posts</a>
+      <h1>Secure Password Storage in Python: A Guide to Keyring</h1>
+      <div class="article__meta">
+        <time datetime="2022-10-10">10 oct 2022</time>
+        <span>1 min read</span>
+      </div>
+      <ul class="tags" aria-label="Tags"><li>keyring</li><li>python</li><li>passwords</li><li>security</li></ul>
+    </header>
+    <figure class="article__cover" data-slot="cover-secure-password-storage-in-python-a-guide-to-keyring" data-alt="Cover for Secure Password Storage in Python: A Guide to Keyring"><img src="https://cdn.hashnode.com/res/hashnode/image/upload/v1719426251948/f62ef4af-bb37-49c7-91e7-a56933e461f3.jpeg?w=1600&amp;auto=compress,format" alt="" width="1600" height="900" fetchpriority="high"></figure>
+    <div class="prose">
+<pre tabindex="0"><code class="lang-python"><span class="hljs-keyword">import</span> os
+<span class="hljs-keyword">import</span> keyring
+
+
+<span class="hljs-function"><span class="hljs-keyword">def</span> <span class="hljs-title">set_password</span>(<span class="hljs-params">service_name, username, password</span>):</span>
+    <span class="hljs-keyword">try</span>:
+        <span class="hljs-comment"># Set the password in the keyring</span>
+        keyring.set_password(service_name, username, password)
+        print(<span class="hljs-string">"Password set for service '{}' and username '{}'"</span>.format(service_name, username))
+    <span class="hljs-keyword">except</span> keyring.errors.KeyringError <span class="hljs-keyword">as</span> e:
+        <span class="hljs-comment"># Handle any errors that occur during password setting</span>
+        print(<span class="hljs-string">"Error setting password: '{}'"</span>.format(str(e)))
+
+
+<span class="hljs-function"><span class="hljs-keyword">def</span> <span class="hljs-title">get_password</span>(<span class="hljs-params">service_name, username</span>):</span>
+    <span class="hljs-keyword">try</span>:
+        <span class="hljs-comment"># Retrieve the password from the keyring</span>
+        password = keyring.get_password(service_name, username)
+        <span class="hljs-keyword">if</span> password:
+              print(<span class="hljs-string">"Password set for service '{}' and username '{}'"</span>.format(service_name, username))
+        <span class="hljs-keyword">else</span>:
+            print(<span class="hljs-string">"No password found '{}' and username '{}'"</span>.format(service_name, username))
+    <span class="hljs-keyword">except</span> keyring.errors.KeyringError <span class="hljs-keyword">as</span> e:
+        <span class="hljs-comment"># Handle any errors that occur during password retrieval</span>
+        print(<span class="hljs-string">"Error retrieving password: '{}'"</span>.format(str(e)))
+
+
+<span class="hljs-comment"># Usage example</span>
+service_name = <span class="hljs-string">'test_svcaccount'</span>
+username = <span class="hljs-string">'test-user'</span>
+pssword = os.environ[<span class="hljs-string">'SECRET_PARAM'</span>]
+<span class="hljs-comment">#pssword = 'fhvjh'</span>
+
+<span class="hljs-comment"># Set the password</span>
+set_password(service_name, username, pssword)
+
+<span class="hljs-comment"># Get the password</span>
+get_password(service_name, username)
+</code></pre>
+    </div>
+    <p class="article__back"><a class="link" href="/blogs/">back to all posts</a></p>
+  </article>
+</main>
+<!-- chrome:footer -->
+<footer class="foot">
+  <div class="container">
+    <a class="foot__mark" href="/">techswitch</a>
+    <ul class="foot__links">
+      <li><a href="/blogs/">blogs</a></li>
+      <li><a href="https://github.com/techswitch-c">github</a></li>
+      <li><a href="https://www.linkedin.com/company/techswitch-c">linkedin</a></li>
+      <li><a href="https://www.youtube.com/@tech_switch">youtube</a></li>
+      <li><a href="https://twitter.com/_techswitch_">x</a></li>
+      <li><a href="https://mr-saikiran.github.io/">founder</a></li>
+      <li><a href="/blogs/rss.xml">rss</a></li>
+    </ul>
+    <p class="foot__legal">&copy; 2026 TechSwitch, Andheri, Mumbai</p>
+  </div>
+</footer>
+<!-- /chrome:footer -->
+<script>document.querySelectorAll('[data-slot] img').forEach((i) => { if (i.complete && !i.naturalWidth) i.remove(); else i.addEventListener('error', () => i.remove(), { once: true }); });</script>
+</body>
+</html>

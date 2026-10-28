@@ -1,0 +1,37 @@
+[
+ {
+  "shape": "Map / Diagram",
+  "theme": "ultraviolet",
+  "axes": "light/geometric-sans/cool",
+  "hero": "Ledge",
+  "nav": "masthead",
+  "footer": "mast",
+  "imagery": "product",
+  "photos": [],
+  "entry": "index",
+  "fingerprint": [
+   "map-diagram",
+   "ledge",
+   "masthead",
+   "mast",
+   "index-lead",
+   "record-band"
+  ],
+  "sections": [
+   "hero:map",
+   "index",
+   "switcher",
+   "rows",
+   "grid",
+   "band:record",
+   "footer"
+  ],
+  "signature": "the delivery pipeline as a six-stage map naming the tools",
+  "waived": [
+   "47c"
+  ],
+  "prompt": "techswitch.in: services, UPI Hub, blogs from hashnode; light and dark",
+  "date": "2026-10-28",
+  "mode": "build"
+ }
+]

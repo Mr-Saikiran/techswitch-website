@@ -1,0 +1,281 @@
+<?xml version="1.0" encoding="UTF-8"?><rss version="2.0" xmlns:content="http://purl.org/rss/1.0/modules/content/" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>TechSwitch blog</title><link>https://techswitch.in/blogs/</link><description>Notes on DevSecOps, cloud and Python from TechSwitch.</description><language>en</language><atom:link href="https://techswitch.in/blogs/rss.xml" rel="self" type="application/rss+xml"/><item><title><![CDATA[Part 2 - Artifacts Attestation for Builds in Github Actions]]></title><link>https://techswitch.in/blogs/part-2-artifacts-attestation-for-builds-in-github-actions/</link><guid isPermaLink="true">https://techswitch.in/blogs/part-2-artifacts-attestation-for-builds-in-github-actions/</guid><description><![CDATA[Boost build's supply chain security by adding artifact attestations in Github Actions]]></description><pubDate>Fri, 03 Nov 2023 18:30:00 GMT</pubDate><category><![CDATA[github-actions]]></category><category><![CDATA[Security]]></category><category><![CDATA[Attestation]]></category><category><![CDATA[Actions]]></category><category><![CDATA[workflow]]></category><category><![CDATA[deployment]]></category><category><![CDATA[Pipelines]]></category><category><![CDATA[DevSecOps]]></category><content:encoded><![CDATA[<p>Artifact attestations help boost your build's supply chain security by showing where and how your software was created.</p>
+<p>In Github Actions we can acheive this using <code>actions/attest-build-provenance</code></p>
+<ol>
+<li>First add permission to your workflows / re-usable workflows with <code>attestations: write</code></li>
+</ol>
+<pre tabindex="0"><code class="lang-yaml"><span class="hljs-attr">permissions:</span>
+  <span class="hljs-attr">id-token:</span> <span class="hljs-string">write</span>
+  <span class="hljs-attr">contents:</span> <span class="hljs-string">read</span>
+  <span class="hljs-attr">attestations:</span> <span class="hljs-string">write</span>
+</code></pre>
+<h3 id="heading-optional-with-maven-builds">(optional) with Maven Builds</h3>
+<p>need to specify the jar that would be generated during the maven build with exact path. in my case it is <code>target/*.jar</code> We can also add the name to attestation.</p>
+<pre tabindex="0"><code class="lang-yaml">    <span class="hljs-bullet">-</span> <span class="hljs-attr">name:</span> <span class="hljs-string">Build</span> <span class="hljs-string">with</span> <span class="hljs-string">Maven</span>
+      <span class="hljs-attr">shell:</span> <span class="hljs-string">bash</span>
+      <span class="hljs-attr">run:</span> <span class="hljs-string">mvn</span> <span class="hljs-string">--batch-mode</span> <span class="hljs-string">--update-snapshots</span> <span class="hljs-string">-DskipTests</span> <span class="hljs-string">package</span>    
+
+    <span class="hljs-bullet">-</span> <span class="hljs-attr">name:</span> <span class="hljs-string">Attest</span> <span class="hljs-string">Artifacts</span>
+      <span class="hljs-attr">uses:</span> <span class="hljs-string">actions/attest-build-provenance@v1.3.2</span>
+      <span class="hljs-attr">with:</span>
+        <span class="hljs-attr">subject-path:</span> <span class="hljs-string">'target/*.jar'</span>
+        <span class="hljs-attr">subject-name:</span> <span class="hljs-string">${{</span> <span class="hljs-string">inputs.container-name</span> <span class="hljs-string">}}-attestation</span>
+</code></pre>
+<ol start="2">
+<li><h1 id="heading-with-docker-builds">with Docker builds</h1>
+</li>
+</ol>
+<p>Similarly, you can ensure that your Docker artifacts are properly attested, thereby enhancing the security and integrity of your build process. This approach helps in maintaining a robust supply chain security by providing verifiable evidence of how and where your Docker images were created.</p>
+<pre tabindex="0"><code class="lang-yaml">    <span class="hljs-bullet">-</span> <span class="hljs-attr">name:</span> <span class="hljs-string">Docker</span> <span class="hljs-string">build-push</span>
+      <span class="hljs-attr">id:</span> <span class="hljs-string">docker-build</span>
+      <span class="hljs-attr">uses:</span> <span class="hljs-string">docker/build-push-action@v6</span>
+      <span class="hljs-attr">with:</span>
+        <span class="hljs-attr">context:</span> <span class="hljs-string">.</span>
+        <span class="hljs-attr">push:</span> <span class="hljs-literal">true</span>
+        <span class="hljs-attr">tags:</span> <span class="hljs-string">|
+          ${{ inputs.acr-url }}/${{ inputs.container-name }}:latest
+</span>        <span class="hljs-comment"># cache-from: type=registry,ref=${{ inputs.acr-url }}/${{ env.containerName }}:buildcache</span>
+        <span class="hljs-comment"># cache-to: type=registry,ref=${{ inputs.acr-url }}/${{ env.containerName }}:buildcache,mode=max</span>
+        <span class="hljs-attr">cache-from:</span> <span class="hljs-string">type=gha</span>
+        <span class="hljs-attr">cache-to:</span> <span class="hljs-string">type=gha,mode=max</span>   
+
+    <span class="hljs-bullet">-</span> <span class="hljs-attr">name:</span> <span class="hljs-string">Attest</span> <span class="hljs-string">Docker</span> <span class="hljs-string">build</span>
+      <span class="hljs-attr">uses:</span> <span class="hljs-string">actions/attest-build-provenance@v1.3.2</span>
+      <span class="hljs-attr">id:</span> <span class="hljs-string">attest</span>
+      <span class="hljs-attr">with:</span>
+        <span class="hljs-attr">subject-name:</span> <span class="hljs-string">${{</span> <span class="hljs-string">inputs.acr-url</span> <span class="hljs-string">}}/${{</span> <span class="hljs-string">inputs.container-name</span> <span class="hljs-string">}}</span>
+        <span class="hljs-attr">subject-digest:</span> <span class="hljs-string">${{</span> <span class="hljs-string">steps.docker-build.outputs.digest</span> <span class="hljs-string">}}</span>
+        <span class="hljs-attr">push-to-registry:</span> <span class="hljs-literal">true</span>
+</code></pre>
+<p>And by just Generating these attestations doesn’t boost security.</p>
+<ol start="3">
+<li>You need to verify them for it to actually make a difference. Here is an example how this can be verified</li>
+</ol>
+<pre tabindex="0"><code class="lang-yaml">    <span class="hljs-bullet">-</span> <span class="hljs-attr">name:</span> <span class="hljs-string">Verify</span> <span class="hljs-string">OCI</span> <span class="hljs-string">image</span>
+      <span class="hljs-attr">shell:</span> <span class="hljs-string">bash</span>
+      <span class="hljs-attr">env:</span>
+        <span class="hljs-attr">GH_TOKEN:</span> <span class="hljs-string">${{</span> <span class="hljs-string">inputs.github-token</span> <span class="hljs-string">}}</span>
+      <span class="hljs-attr">run:</span> <span class="hljs-string">|</span>
+        <span class="hljs-string">gh</span> <span class="hljs-string">attestation</span> <span class="hljs-string">verify</span> <span class="hljs-string">oci://${{</span> <span class="hljs-string">inputs.acr-url</span> <span class="hljs-string">}}/${{</span> <span class="hljs-string">inputs.container-name</span> <span class="hljs-string">}}:latest</span> <span class="hljs-string">--owner</span> <span class="hljs-string">"$GITHUB_REPOSITORY_OWNER"</span>
+</code></pre>
+<p>You will see a detailed summary after the workflow execution is complete. it will show the status of the Docker build and push actions, indicating whether the image was successfully built and pushed to the specified container registry.</p>
+<p>Additionally, it will include information about the attestation process, confirming whether the build provenance was properly attested and pushed to the registry.</p>
+<p>Finally, the summary will display the results of the verification step, showing whether the OCI image was successfully verified using the provided GitHub token. This comprehensive summary helps ensure that each step of the workflow was executed correctly and provides valuable insights into the overall process.</p>
+<p><img loading="lazy" src="https://cdn.hashnode.com/res/hashnode/image/upload/v1719430534520/617391ed-b5ca-49d1-86a9-4047c5e140a2.png" alt class="image--center mx-auto" /></p>
+<p>By clicking on the Attestation URL, you will see detailed information.</p>
+<p><img loading="lazy" src="https://cdn.hashnode.com/res/hashnode/image/upload/v1719430672824/d084765c-49bb-493e-8cce-76b5e6a0f298.png" alt class="image--center mx-auto" /></p>]]></content:encoded></item><item><title><![CDATA[Part 1 - Cache Docker, Python, Java(Maven), Node(npm), Go Modules in Github Actions]]></title><link>https://techswitch.in/blogs/cache-docker-python-javamaven-nodenpm-go-modules-in-github-actions/</link><guid isPermaLink="true">https://techswitch.in/blogs/cache-docker-python-javamaven-nodenpm-go-modules-in-github-actions/</guid><description><![CDATA[Improve GitHub Actions with efficient caching techniques for Docker, Python, Java, Node, and Go to speed up workflows]]></description><pubDate>Thu, 11 May 2023 18:30:00 GMT</pubDate><category><![CDATA[github-actions]]></category><category><![CDATA[ci-cd]]></category><category><![CDATA[cache]]></category><category><![CDATA[caching]]></category><category><![CDATA[caching strategies]]></category><category><![CDATA[workflow]]></category><content:encoded><![CDATA[<p>"Caching helps workflows run faster". The cache is created during the first run and is used for later runs, saving time and keeping the workflow efficient by speeding up the workflow runs.</p>
+<h2 id="heading-cache-maven">Cache Maven</h2>
+<p>Maven usually takes a longer time to build the dependencies because it needs to download all the required libraries and plugins from remote repositories. This process can be significantly sped up by caching the Maven repository. To achieve this, you can set the path to the local Maven repository and use the <code>key</code> and <code>restore-keys</code> arguments in your caching configuration. By doing so, the dependencies are stored locally after the first run and can be reused in subsequent runs, eliminating the need to download them again. This approach not only saves time but also reduces the load on remote repositories, making your build process more efficient and reliable.</p>
+<pre tabindex="0"><code class="lang-yaml"><span class="hljs-bullet">-</span> <span class="hljs-attr">name:</span> <span class="hljs-string">Cache</span> <span class="hljs-string">Maven</span>
+  <span class="hljs-attr">uses:</span> <span class="hljs-string">actions/cache@v4</span>
+  <span class="hljs-attr">with:</span>
+    <span class="hljs-attr">path:</span> <span class="hljs-string">~/.m2/repository</span>
+    <span class="hljs-attr">key:</span> <span class="hljs-string">${{</span> <span class="hljs-string">runner.os</span> <span class="hljs-string">}}-m2-${{</span> <span class="hljs-string">hashFiles('**/pom.xml')</span> <span class="hljs-string">}}</span>
+    <span class="hljs-attr">restore-keys:</span> <span class="hljs-string">|</span>
+      <span class="hljs-string">${{</span> <span class="hljs-string">runner.os</span> <span class="hljs-string">}}-m2-</span>
+</code></pre>
+<h2 id="heading-cache-nodejs">Cache NodeJS</h2>
+<p>In Unix-based Operating Systems, NodeJS npm cache files are stored under <code>~/.npm</code>. This directory contains all the cached files that npm uses to speed up subsequent installations of packages. By caching these files, you can significantly reduce the time it takes to install dependencies in future runs, as npm will reuse the cached files instead of downloading them again. This is particularly useful in continuous integration and deployment pipelines, where the same dependencies are often installed repeatedly. To cache the npm files, you can use the following configuration in your workflow:</p>
+<pre tabindex="0"><code class="lang-yaml"><span class="hljs-bullet">-</span> <span class="hljs-attr">uses:</span> <span class="hljs-string">actions/cache@v4</span>
+  <span class="hljs-attr">with:</span>
+    <span class="hljs-attr">path:</span> <span class="hljs-string">~/.npm</span>
+    <span class="hljs-attr">key:</span> <span class="hljs-string">${{</span> <span class="hljs-string">runner.os</span> <span class="hljs-string">}}-node-${{</span> <span class="hljs-string">hashFiles('**/package-lock.json')</span> <span class="hljs-string">}}</span>
+    <span class="hljs-attr">restore-keys:</span> <span class="hljs-string">|
+      ${{ runner.os }}-node-
+      ${{ runner.os }}-</span>
+</code></pre>
+<p>Alternatively, this can be used directly with the <code>setup-node</code> action.</p>
+<pre tabindex="0"><code class="lang-yaml"><span class="hljs-bullet">-</span> <span class="hljs-attr">uses:</span> <span class="hljs-string">actions/setup-node@v4</span>
+  <span class="hljs-attr">with:</span>
+    <span class="hljs-attr">node-version:</span> <span class="hljs-string">'20.x'</span>
+    <span class="hljs-attr">cache:</span> <span class="hljs-string">'npm'</span>
+    <span class="hljs-attr">cache-dependency-path:</span> <span class="hljs-string">'**/package-lock.json'</span>
+</code></pre>
+<h2 id="heading-cache-python">Cache Python</h2>
+<p>Python dependencies can be cached to speed up workflow runs significantly. For <code>pipenv</code>, the dependencies are typically stored under <code>~/.local/share/virtualenvs</code>. This directory contains the virtual environments created by <code>pipenv</code>, which include all the necessary packages and dependencies for your Python projects. By caching this directory, you can avoid the time-consuming process of reinstalling these dependencies during each workflow run.</p>
+<p><strong>for PIPENV</strong></p>
+<pre tabindex="0"><code class="lang-yaml"><span class="hljs-bullet">-</span> <span class="hljs-attr">uses:</span> <span class="hljs-string">actions/cache@v4</span>
+  <span class="hljs-attr">with:</span>
+    <span class="hljs-attr">path:</span> <span class="hljs-string">~/.local/share/virtualenvs</span>
+    <span class="hljs-attr">key:</span> <span class="hljs-string">${{</span> <span class="hljs-string">runner.os</span> <span class="hljs-string">}}-python-${{</span> <span class="hljs-string">steps.setup-python.outputs.python-version</span> <span class="hljs-string">}}-pipenv-${{</span> <span class="hljs-string">hashFiles('Pipfile.lock')</span> <span class="hljs-string">}}</span>
+</code></pre>
+<p><strong>for PIP</strong>  </p>
+<pre tabindex="0"><code class="lang-yaml"><span class="hljs-bullet">-</span> <span class="hljs-attr">uses:</span> <span class="hljs-string">actions/cache@v4</span>
+  <span class="hljs-attr">with:</span>
+    <span class="hljs-attr">path:</span> <span class="hljs-string">~/.cache/pip</span>
+    <span class="hljs-attr">key:</span> <span class="hljs-string">${{</span> <span class="hljs-string">runner.os</span> <span class="hljs-string">}}-pip-${{</span> <span class="hljs-string">hashFiles('**/requirements.txt')</span> <span class="hljs-string">}}</span>
+    <span class="hljs-attr">restore-keys:</span> <span class="hljs-string">|</span>
+      <span class="hljs-string">${{</span> <span class="hljs-string">runner.os</span> <span class="hljs-string">}}-pip-</span>
+</code></pre>
+<h2 id="heading-cache-docker">Cache Docker</h2>
+<p>Significantly speed up your Docker builds by leveraging GitHub's infrastructure to store and retrieve cache layers. Docker provides multiple caching options, including Registry Cache, Inline Cache, and GitHub Cache. Each method has its own advantages, but I recommend using GitHub Cache with the <code>type=gha</code> as it is integrated seamlessly with GitHub Actions, making it easier to set up and manage within your CI/CD workflows.</p>
+<pre tabindex="0"><code class="lang-yaml">    <span class="hljs-bullet">-</span> <span class="hljs-attr">name:</span> <span class="hljs-string">Build</span> <span class="hljs-string">and</span> <span class="hljs-string">push</span>
+      <span class="hljs-attr">uses:</span> <span class="hljs-string">docker/build-push-action@v6</span>
+      <span class="hljs-attr">with:</span>
+        <span class="hljs-comment"># context: docker-springboot</span>
+        <span class="hljs-attr">context:</span> <span class="hljs-string">.</span>
+        <span class="hljs-attr">push:</span> <span class="hljs-literal">true</span>
+        <span class="hljs-attr">tags:</span> <span class="hljs-string">|
+          ${{ inputs.acr}}/${{ github.event.repository.name }}:latest
+</span>        <span class="hljs-comment"># cache-from: type=registry,ref=${{ inputs.acr-url }}/${{ env.containerName }}:buildcache</span>
+        <span class="hljs-comment"># cache-to: type=registry,ref=${{ inputs.acr-url }}/${{ env.containerName }}:buildcache,mode=max</span>
+        <span class="hljs-attr">cache-from:</span> <span class="hljs-string">type=gha</span>
+        <span class="hljs-attr">cache-to:</span> <span class="hljs-string">type=gha,mode=max</span>
+</code></pre>
+<h2 id="heading-cache-go">Cache Go</h2>
+<p>Like other builds, Go builds can benefit significantly from caching. By storing and reusing dependencies and build artifacts, we can drastically reduce build times and improve efficiency. GitHub Actions provides a convenient way to cache Go modules and build outputs, ensuring that subsequent builds are faster and more reliable.</p>
+<pre tabindex="0"><code class="lang-yaml"><span class="hljs-bullet">-</span> <span class="hljs-attr">uses:</span> <span class="hljs-string">actions/cache@v4</span>
+  <span class="hljs-attr">with:</span>
+    <span class="hljs-attr">path:</span> <span class="hljs-string">|
+      ~/.cache/go-build
+      ~/go/pkg/mod
+</span>    <span class="hljs-attr">key:</span> <span class="hljs-string">${{</span> <span class="hljs-string">runner.os</span> <span class="hljs-string">}}-go-${{</span> <span class="hljs-string">hashFiles('**/go.sum')</span> <span class="hljs-string">}}</span>
+    <span class="hljs-attr">restore-keys:</span> <span class="hljs-string">|</span>
+      <span class="hljs-string">${{</span> <span class="hljs-string">runner.os</span> <span class="hljs-string">}}-go-</span>
+</code></pre>
+<p>Similarly, we can use the caching directly using <code>setup-go</code> action</p>
+<pre tabindex="0"><code class="lang-yaml">  <span class="hljs-bullet">-</span> <span class="hljs-attr">uses:</span> <span class="hljs-string">actions/setup-go@v5</span>
+    <span class="hljs-attr">with:</span>
+      <span class="hljs-attr">go-version:</span> <span class="hljs-string">'1.17'</span>
+      <span class="hljs-attr">check-latest:</span> <span class="hljs-literal">true</span>
+      <span class="hljs-attr">cache-dependency-path:</span> <span class="hljs-string">"**/*.sum"</span>
+</code></pre>
+<p>You can find more information and detailed instructions on how to use the caching feature by visiting the <a target="_blank" href="https://github.com/marketplace/actions/cache">Cache action</a> page.</p>
+<p>By following the above examples, you can ensure that your builds are not only faster but also more efficient and reliable. Whether you are working with Go, Node.js, Python, or any other language, the Cache action can help you to implement effective caching in your GitHub Actions workflows.</p>]]></content:encoded></item><item><title><![CDATA[Secure Password Storage in Python: A Guide to Keyring]]></title><link>https://techswitch.in/blogs/secure-password-storage-in-python-a-guide-to-keyring/</link><guid isPermaLink="true">https://techswitch.in/blogs/secure-password-storage-in-python-a-guide-to-keyring/</guid><description><![CDATA[Python keyring makes system keyring access simple and secure.]]></description><pubDate>Mon, 10 Oct 2022 18:30:00 GMT</pubDate><category><![CDATA[keyring]]></category><category><![CDATA[Python]]></category><category><![CDATA[passwords]]></category><category><![CDATA[Security]]></category><content:encoded><![CDATA[<pre tabindex="0"><code class="lang-python"><span class="hljs-keyword">import</span> os
+<span class="hljs-keyword">import</span> keyring
+
+
+<span class="hljs-function"><span class="hljs-keyword">def</span> <span class="hljs-title">set_password</span>(<span class="hljs-params">service_name, username, password</span>):</span>
+    <span class="hljs-keyword">try</span>:
+        <span class="hljs-comment"># Set the password in the keyring</span>
+        keyring.set_password(service_name, username, password)
+        print(<span class="hljs-string">"Password set for service '{}' and username '{}'"</span>.format(service_name, username))
+    <span class="hljs-keyword">except</span> keyring.errors.KeyringError <span class="hljs-keyword">as</span> e:
+        <span class="hljs-comment"># Handle any errors that occur during password setting</span>
+        print(<span class="hljs-string">"Error setting password: '{}'"</span>.format(str(e)))
+
+
+<span class="hljs-function"><span class="hljs-keyword">def</span> <span class="hljs-title">get_password</span>(<span class="hljs-params">service_name, username</span>):</span>
+    <span class="hljs-keyword">try</span>:
+        <span class="hljs-comment"># Retrieve the password from the keyring</span>
+        password = keyring.get_password(service_name, username)
+        <span class="hljs-keyword">if</span> password:
+              print(<span class="hljs-string">"Password set for service '{}' and username '{}'"</span>.format(service_name, username))
+        <span class="hljs-keyword">else</span>:
+            print(<span class="hljs-string">"No password found '{}' and username '{}'"</span>.format(service_name, username))
+    <span class="hljs-keyword">except</span> keyring.errors.KeyringError <span class="hljs-keyword">as</span> e:
+        <span class="hljs-comment"># Handle any errors that occur during password retrieval</span>
+        print(<span class="hljs-string">"Error retrieving password: '{}'"</span>.format(str(e)))
+
+
+<span class="hljs-comment"># Usage example</span>
+service_name = <span class="hljs-string">'test_svcaccount'</span>
+username = <span class="hljs-string">'test-user'</span>
+pssword = os.environ[<span class="hljs-string">'SECRET_PARAM'</span>]
+<span class="hljs-comment">#pssword = 'fhvjh'</span>
+
+<span class="hljs-comment"># Set the password</span>
+set_password(service_name, username, pssword)
+
+<span class="hljs-comment"># Get the password</span>
+get_password(service_name, username)
+</code></pre>]]></content:encoded></item><item><title><![CDATA[Agile foundation Quiz Answers]]></title><link>https://techswitch.in/blogs/agile-foundation-quiz-answers/</link><guid isPermaLink="true">https://techswitch.in/blogs/agile-foundation-quiz-answers/</guid><description><![CDATA[Disclaimer: Please use these responses as a last resort if you tried the questions several times and still couldn't pass it. 1. In the penny game exercise…]]></description><pubDate>Sun, 13 Jun 2021 18:30:00 GMT</pubDate><category><![CDATA[agile quiz]]></category><category><![CDATA[linkedin quiz]]></category><category><![CDATA[agile foundation]]></category><category><![CDATA[agile]]></category><category><![CDATA[agile development]]></category><content:encoded><![CDATA[<p><strong>Disclaimer</strong>: Please use these responses as a last resort if you tried the questions several times and still couldn't pass it.</p>
+<p><strong>1. In the penny game exercise, why do you think it takes longer for one person to flip five batches of two pennies then one batch of ten pennies?</strong></p>
+<p><code>You have less collaboration on one large batch of work</code></p>
+<p><strong>2. How does the Pareto principle apply to product development?</strong></p>
+<p><code>Often 80% of your product's value comes from 20% of your efforts</code></p>
+<p><strong>3.  Your team has been working on a software project for over a year. The software is behind schedule, so the executives have pressured the managers to try an agile approach. The manager for your team says that there are three project milestones coming up in the next six months. So the manager suggests that they simply rename the three milestones Sprint 1, Sprint 2 and Sprint 3. What's the biggest challenge with this approach?</strong></p>
+<p><code>It's unlikely that your team will get any benefit from an agile mindset by following existing practices</code></p>
+<p><strong>4. What does it mean when you say that Scrum separates the "what" from the "how?"</strong></p>
+<p><code>The product owner decides what the team will deliver, and the team decides how they'll deliver it</code></p>
+<p><strong>5. You work as a software developer on an agile team. Your manager has decided that the team must work off the existing requirements documents. What's one of the main challenges with this approach?</strong></p>
+<p><code>Agile teams embrace change, requirement documents are designed to limit conversation and flexibility</code></p>
+<p><strong>6. Your agile team only has one database developer. So the other developers finish their tasks and then wait for their work to be Integrated into the database. This creates a backup for the database developer. But it also means that the other developers must either wait or add to a growing pile of database work. What's one possible solution to this challenge?</strong></p>
+<p><code>Have the database developer train the rest of the team so there are fewer handoffs</code></p>
+<p><strong>7. What does it mean that Scrum defines itself as a "framework for empirical process control?"</strong></p>
+<p><code>It means that Scrum teams are encouraged to run experiments to improve the product</code></p>
+<p><strong>8. What is typically not part of the product owner's role?</strong></p>
+<p><code>They create the project requirements documentation</code></p>
+<p><strong>9. What's the best definition of a product iteration?</strong></p>
+<p><code>It is an incremental step towards delivering your product</code></p>
+<p><strong>10.The business analysts at your organization often take weeks to come up with an updated set of requirements. So the senior developer for your team encourages everyone to catch up on their training while they wait for the update. If you were an agile coach for the organization, what might you do to improve the situation?</strong></p>
+<p><code>You would encourage someone from the business to sit with the team to eliminate the handoff</code></p>
+<p><strong>11. In the Agile Manifesto Principles 3 and 7 recommend continuous software delivery in "weeks" as a measure of progress. What's one of the ways an agile team can follow this principle?</strong></p>
+<p><code>Deliver software in two-weeks iterations or "Sprints"</code></p>
+<p><strong>12. Your agile team has a senior developer that's been with the organization for over a decade. Whenever something goes wrong with the product, the director pulls this person out of the team to fix the trouble. What's likely to happen on your agile team when this person is pulled from their tasks?</strong></p>
+<p><code>Agile teams work in close collaboration, so this will likely create a backup</code></p>
+<p><strong>13. The director of your software product development team has started a new initiative that emphasizes organizational knowledge sharing. So they purchased licenses for a social group chat platform. They asked you to keep the platform open to answer questions that are relevant to the product. Why might this be difficult for your agile team?</strong></p>
+<p><code>The platform will encourage your team to multitask</code></p>
+<p><strong>14. How are organizational silos related to the penny game?</strong></p>
+<p><code>Organizational silos encouraged individuals to create large batches of work</code></p>
+<p><strong>15. When working with an agile team, managers will often give up long term plans for predictability. So why are agile teams more predictable?</strong></p>
+<p><code>Agile teams commit to delivering product increments every two weeks</code></p>
+<p><strong>16. Your agile team has set up a task board with a list of user stories under the "To Do" column. the Scrum Master says that the team can pull out the cards in any order that they like. So the developers start working on user stories that they think will be completed quickly. Is the Scrum Master right?</strong></p>
+<p><code>No, the agile team should always work on the highest priority user stories first</code></p>
+<p><strong>17. What is not a characteristic of a self-organized team?</strong></p>
+<p><code>These teams have a director who assigns everyone their tasks</code></p>
+<p><strong>18. What's one of the best ways to avoid the challenges with the cone of uncertainty?</strong></p>
+<p><code>Don't make all your decisions at the beginning when you know the least about the final product</code></p>
+<h3 id="heading-wanna-thank-me">Wanna thank me? 👇🏼</h3>
+<p><a target="_blank" href="https://www.buymeacoffee.com/techswitch"><img loading="lazy" src="https://cdn.buymeacoffee.com/buttons/v2/default-yellow.png" alt="Buy Me A Coffee" /></a></p>]]></content:encoded></item><item><title><![CDATA[Beginner's Python: Unveiling Quirky and Useful Functions You Didn't know Existed]]></title><link>https://techswitch.in/blogs/beginners-python-unveiling-quirky-and-useful-functions-you-didnt-know-existed/</link><guid isPermaLink="true">https://techswitch.in/blogs/beginners-python-unveiling-quirky-and-useful-functions-you-didnt-know-existed/</guid><description><![CDATA[To pass the value for c, d, and e you will need to explicitly pass it as “key=value” named arguments: getuser() gets the current username:]]></description><pubDate>Mon, 14 Oct 2019 18:30:00 GMT</pubDate><category><![CDATA[python tricks]]></category><category><![CDATA[Python]]></category><category><![CDATA[Python 3]]></category><category><![CDATA[python beginner]]></category><category><![CDATA[py]]></category><category><![CDATA[python tips]]></category><content:encoded><![CDATA[<h3 id="heading-1-function-to-make-a-noun-adjective-from-a-verb-or-an-adverb-from-a-noun-adjective">1. Function to make a noun (adjective) from a verb or an adverb from a noun (adjective)</h3>
+<pre tabindex="0"><code class="lang-python"><span class="hljs-function"><span class="hljs-keyword">def</span> <span class="hljs-title">verbing</span>(<span class="hljs-params">s</span>):</span>
+    returns iflen(s) &lt; <span class="hljs-number">3</span> elses + (<span class="hljs-string">'ing'</span>, <span class="hljs-string">'ly'</span>)[<span class="hljs-string">'ing'</span> ins]
+<span class="hljs-meta">&gt;&gt;&gt; </span>verbing(<span class="hljs-string">'help'</span>)
+helping
+<span class="hljs-meta">&gt;&gt;&gt; </span>verbing(<span class="hljs-string">'helping'</span>)
+helpingly
+</code></pre>
+<h3 id="heading-2-use-a-bare-asterisk-in-function-parameter-lists-to-force-the-caller-to-use-keyword-arguments-for-certain-parameters">2. use a bare “*” asterisk in function parameter lists to force the caller to use keyword arguments for certain parameters</h3>
+<pre tabindex="0"><code class="lang-python"><span class="hljs-meta">&gt;&gt;&gt; </span><span class="hljs-function"><span class="hljs-keyword">def</span> <span class="hljs-title">f</span>(<span class="hljs-params">a, b, *, c=<span class="hljs-string">'x'</span>, d=<span class="hljs-string">'y'</span>, e=<span class="hljs-string">'z'</span></span>):</span>
+<span class="hljs-meta">... </span>    <span class="hljs-keyword">return</span> <span class="hljs-string">'Hello'</span>
+</code></pre>
+<p>To pass the value for c, d, and e you will need to explicitly pass it as “key=value” named arguments:</p>
+<pre tabindex="0"><code class="lang-python"><span class="hljs-meta">&gt;&gt;&gt; </span>f(<span class="hljs-number">1</span>, <span class="hljs-number">2</span>, <span class="hljs-string">'p'</span>, <span class="hljs-string">'q'</span>, <span class="hljs-string">'v'</span>)
+TypeError: f() takes <span class="hljs-number">2</span> positional arguments but <span class="hljs-number">5</span> were given
+<span class="hljs-meta">&gt;&gt;&gt; </span>f(<span class="hljs-number">1</span>, <span class="hljs-number">2</span>, c=<span class="hljs-string">'p'</span>, d=<span class="hljs-string">'q'</span>,e=<span class="hljs-string">'v'</span>)
+<span class="hljs-string">'Hello'</span>
+</code></pre>
+<h3 id="heading-3-getpass-module-provides-a-platform-independent-way-to-enter-a-password-in-a-command-line-program-without-echoing">3. getpass module provides a platform-independent way to enter a password in a command-line program without echoing</h3>
+<pre tabindex="0"><code class="lang-python"><span class="hljs-meta">&gt;&gt;&gt; </span><span class="hljs-keyword">import</span> getpass
+<span class="hljs-meta">&gt;&gt;&gt; </span>password = getpass.getpass()
+Password:
+<span class="hljs-meta">&gt;&gt;&gt; </span>password
+<span class="hljs-string">'alohomora'</span>
+</code></pre>
+<p><code>getuser()</code> gets the current username:</p>
+<pre tabindex="0"><code class="lang-python"><span class="hljs-meta">&gt;&gt;&gt; </span>getpass.getuser()
+<span class="hljs-string">'sirius_black'</span>
+</code></pre>
+<h3 id="heading-4-if-the-fractional-component-of-the-number-is-halfway-between-two-integers-one-of-which-is-even-and-the-other-odd-then-round-returns-the-even-this-kind-of-rounding-is-called-rounding-to-even-or-bankers-rounding">4. if the fractional component of the number is halfway between two integers, one of which is even and the other odd, then <code>round()</code> returns the even. This kind of rounding is called rounding to even (or banker’s rounding)</h3>
+<pre tabindex="0"><code class="lang-python"><span class="hljs-meta">&gt;&gt;&gt; </span>round(<span class="hljs-number">0.5</span>)
+<span class="hljs-number">0</span>
+<span class="hljs-meta">&gt;&gt;&gt; </span>round(<span class="hljs-number">2.4</span>)
+<span class="hljs-number">2</span>
+<span class="hljs-meta">&gt;&gt;&gt; </span>round(<span class="hljs-number">2.5</span>)
+<span class="hljs-number">2</span>
+<span class="hljs-meta">&gt;&gt;&gt; </span>round(<span class="hljs-number">2.6</span>)
+<span class="hljs-number">3</span>
+<span class="hljs-meta">&gt;&gt;&gt; </span>round(<span class="hljs-number">3.5</span>)
+<span class="hljs-number">4</span>
+<span class="hljs-meta">&gt;&gt;&gt; </span>round(<span class="hljs-number">4.5</span>)
+<span class="hljs-number">4</span>
+</code></pre>
+<h3 id="heading-5-the-built-in-function-sysgetsizeof-returns-the-size-of-an-object-in-bytes-the-object-can-be-any-type-of-object">5. The built-in function <code>sys.getsizeof()</code> returns the size of an object in bytes. The object can be any type of object</h3>
+<pre tabindex="0"><code class="lang-python"><span class="hljs-meta">&gt;&gt;&gt; </span>sys.getsizeof(<span class="hljs-number">1</span>)
+<span class="hljs-number">28</span>
+<span class="hljs-meta">&gt;&gt;&gt; </span>sys.getsizeof([<span class="hljs-number">1</span>, <span class="hljs-number">2</span>, <span class="hljs-number">3</span>])
+<span class="hljs-number">88</span>
+<span class="hljs-meta">&gt;&gt;&gt; </span>sys.getsizeof(<span class="hljs-string">''</span>)
+<span class="hljs-number">49</span>
+<span class="hljs-meta">&gt;&gt;&gt; </span>sys.getsizeof(<span class="hljs-string">'P'</span>)
+<span class="hljs-number">50</span>
+<span class="hljs-meta">&gt;&gt;&gt; </span>sys.getsizeof(<span class="hljs-string">'Py'</span>)
+<span class="hljs-number">51</span>
+<span class="hljs-meta">&gt;&gt;&gt; </span>sys.getsizeof(<span class="hljs-string">'Python'</span>)
+<span class="hljs-number">55</span>
+</code></pre>]]></content:encoded></item><item><title><![CDATA[Understanding Memory Leaks in Java JVM]]></title><link>https://techswitch.in/blogs/understanding-memory-leaks-in-java-jvm/</link><guid isPermaLink="true">https://techswitch.in/blogs/understanding-memory-leaks-in-java-jvm/</guid><description><![CDATA[First of all Memory leak is not sweeping Unused objects, It is Sweeping referenced objects. Memory leak is a common memory issue that can result in an…]]></description><pubDate>Fri, 06 Sep 2019 18:30:00 GMT</pubDate><category><![CDATA[Java]]></category><category><![CDATA[Memory Leak]]></category><category><![CDATA[memory-management]]></category><category><![CDATA[jvm]]></category><content:encoded><![CDATA[<p>First of all Memory leak is not sweeping Unused objects, It is Sweeping referenced objects.</p>
+<p><img loading="lazy" src="https://cdn.hashnode.com/res/hashnode/image/upload/v1719429631709/261d105d-8f08-4660-bd51-634f609f5f32.jpeg" alt class="image--center mx-auto" /></p>
+<h3 id="heading-definition">Definition:</h3>
+<p><strong>Memory leak</strong> is a common memory issue that can result in an OutOfMemory error.<br />In Java, memory leaks can occur even with automatic Garbage Collection (GC).<br />GC removes objects that are no longer referenced.</p>
+<p>However, if an object is not used but still referenced, GC will not remove it, potentially causing memory leaks in the JVM.</p>
+<h3 id="heading-conclusion">Conclusion:</h3>
+<p>Understanding memory leaks in the Java JVM is crucial for maintaining optimal application performance. Despite Java's automatic Garbage Collection, memory leaks can still occur when objects that are no longer needed remain referenced. This can lead to an OutOfMemory error, causing the application to crash or behave unpredictably. By identifying and addressing these leaks, developers can ensure more efficient memory usage and improve the stability and reliability of their Java applications.</p>]]></content:encoded></item></channel></rss>

@@ -1,0 +1,23 @@
+// A static-assets-only Worker: no code runs, Cloudflare serves public/ and applies public/_redirects.
+//   npm run deploy:preview   → techswitch.<account>.workers.dev, touches nothing on techswitch.in
+//   npm run deploy           → the production Worker on techswitch.in (after the Hashnode DNS record is gone)
+{
+  "$schema": "node_modules/wrangler/config-schema.json",
+  "name": "techswitch",
+  "compatibility_date": "2026-10-01",
+  "assets": {
+    "directory": "./public",
+    "not_found_handling": "404-page",
+    "html_handling": "auto-trailing-slash"
+  },
+  "workers_dev": true,
+  "env": {
+    "production": {
+      "workers_dev": false,
+      "routes": [
+        { "pattern": "techswitch.in", "custom_domain": true },
+        { "pattern": "www.techswitch.in", "custom_domain": true }
+      ]
+    }
+  }
+}

@@ -1,0 +1,155 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Part 1 - Cache Docker, Python, Java(Maven), Node(npm), Go Modules in Github Actions: TechSwitch</title>
+<meta name="description" content="Improve GitHub Actions with efficient caching techniques for Docker, Python, Java, Node, and Go to speed up workflows">
+<link rel="canonical" href="https://techswitch.in/blogs/cache-docker-python-javamaven-nodenpm-go-modules-in-github-actions/">
+<link rel="icon" href="/img/upihub-icon.png">
+<link rel="alternate" type="application/rss+xml" title="TechSwitch blog" href="/blogs/rss.xml">
+<meta property="og:title" content="Part 1 - Cache Docker, Python, Java(Maven), Node(npm), Go Modules in Github Actions: TechSwitch">
+<meta property="og:description" content="Improve GitHub Actions with efficient caching techniques for Docker, Python, Java, Node, and Go to speed up workflows">
+<meta property="og:url" content="https://techswitch.in/blogs/cache-docker-python-javamaven-nodenpm-go-modules-in-github-actions/">
+<meta property="og:image" content="https://cdn.hashnode.com/res/hashnode/image/upload/v1719430177660/a66047c7-a495-4b2f-bfef-54aa42a437c8.jpeg">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;500&family=Onest:wght@350;400;500&family=JetBrains+Mono&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/site.css">
+<script>document.documentElement.classList.add('js'); try { const m = localStorage.getItem('mode'); if (m === 'dark' || m === 'light') document.documentElement.dataset.mode = m; } catch {}</script>
+<script src="/mode.js" defer></script>
+</head>
+<body>
+<a class="skip" href="#main">Skip to content</a>
+<!-- chrome:nav -->
+<header class="mast">
+  <nav class="container mast__bar" aria-label="Main">
+    <ul class="mast__links mast__links--start">
+      <li><a href="/#work">work</a></li>
+      <li><a href="/#services">services</a></li>
+    </ul>
+    <a class="wordmark" href="/">techswitch</a>
+    <ul class="mast__links mast__links--end">
+      <li class="mast__blog"><a href="/blogs/">blogs</a></li>
+      <li><button class="mode" type="button" data-mode-toggle aria-pressed="false" hidden>dark</button></li>
+      <li class="mast__mail"><a class="btn btn--secondary btn--small" href="mailto:contact@techswitch.in?subject=TechSwitch%20enquiry">email us</a></li>
+    </ul>
+  </nav>
+</header>
+<!-- /chrome:nav -->
+<main id="main">
+  <article class="container article">
+    <header class="article__head">
+      <a class="link" href="/blogs/">all posts</a>
+      <h1>Part 1 - Cache Docker, Python, Java(Maven), Node(npm), Go Modules in Github Actions</h1>
+      <div class="article__meta">
+        <time datetime="2023-05-11">11 may 2023</time>
+        <span>3 min read</span>
+      </div>
+      <ul class="tags" aria-label="Tags"><li>github-actions</li><li>ci-cd</li><li>cache</li><li>caching</li><li>caching strategies</li><li>workflow</li></ul>
+    </header>
+    <figure class="article__cover" data-slot="cover-cache-docker-python-javamaven-nodenpm-go-modules-in-github-actions" data-alt="Cover for Part 1 - Cache Docker, Python, Java(Maven), Node(npm), Go Modules in Github Actions"><img src="https://cdn.hashnode.com/res/hashnode/image/upload/v1719430177660/a66047c7-a495-4b2f-bfef-54aa42a437c8.jpeg?w=1600&amp;auto=compress,format" alt="" width="1600" height="900" fetchpriority="high"></figure>
+    <div class="prose">
+<p>"Caching helps workflows run faster". The cache is created during the first run and is used for later runs, saving time and keeping the workflow efficient by speeding up the workflow runs.</p>
+<h2 id="heading-cache-maven">Cache Maven</h2>
+<p>Maven usually takes a longer time to build the dependencies because it needs to download all the required libraries and plugins from remote repositories. This process can be significantly sped up by caching the Maven repository. To achieve this, you can set the path to the local Maven repository and use the <code>key</code> and <code>restore-keys</code> arguments in your caching configuration. By doing so, the dependencies are stored locally after the first run and can be reused in subsequent runs, eliminating the need to download them again. This approach not only saves time but also reduces the load on remote repositories, making your build process more efficient and reliable.</p>
+<pre tabindex="0"><code class="lang-yaml"><span class="hljs-bullet">-</span> <span class="hljs-attr">name:</span> <span class="hljs-string">Cache</span> <span class="hljs-string">Maven</span>
+  <span class="hljs-attr">uses:</span> <span class="hljs-string">actions/cache@v4</span>
+  <span class="hljs-attr">with:</span>
+    <span class="hljs-attr">path:</span> <span class="hljs-string">~/.m2/repository</span>
+    <span class="hljs-attr">key:</span> <span class="hljs-string">${{</span> <span class="hljs-string">runner.os</span> <span class="hljs-string">}}-m2-${{</span> <span class="hljs-string">hashFiles('**/pom.xml')</span> <span class="hljs-string">}}</span>
+    <span class="hljs-attr">restore-keys:</span> <span class="hljs-string">|</span>
+      <span class="hljs-string">${{</span> <span class="hljs-string">runner.os</span> <span class="hljs-string">}}-m2-</span>
+</code></pre>
+<h2 id="heading-cache-nodejs">Cache NodeJS</h2>
+<p>In Unix-based Operating Systems, NodeJS npm cache files are stored under <code>~/.npm</code>. This directory contains all the cached files that npm uses to speed up subsequent installations of packages. By caching these files, you can significantly reduce the time it takes to install dependencies in future runs, as npm will reuse the cached files instead of downloading them again. This is particularly useful in continuous integration and deployment pipelines, where the same dependencies are often installed repeatedly. To cache the npm files, you can use the following configuration in your workflow:</p>
+<pre tabindex="0"><code class="lang-yaml"><span class="hljs-bullet">-</span> <span class="hljs-attr">uses:</span> <span class="hljs-string">actions/cache@v4</span>
+  <span class="hljs-attr">with:</span>
+    <span class="hljs-attr">path:</span> <span class="hljs-string">~/.npm</span>
+    <span class="hljs-attr">key:</span> <span class="hljs-string">${{</span> <span class="hljs-string">runner.os</span> <span class="hljs-string">}}-node-${{</span> <span class="hljs-string">hashFiles('**/package-lock.json')</span> <span class="hljs-string">}}</span>
+    <span class="hljs-attr">restore-keys:</span> <span class="hljs-string">|
+      ${{ runner.os }}-node-
+      ${{ runner.os }}-</span>
+</code></pre>
+<p>Alternatively, this can be used directly with the <code>setup-node</code> action.</p>
+<pre tabindex="0"><code class="lang-yaml"><span class="hljs-bullet">-</span> <span class="hljs-attr">uses:</span> <span class="hljs-string">actions/setup-node@v4</span>
+  <span class="hljs-attr">with:</span>
+    <span class="hljs-attr">node-version:</span> <span class="hljs-string">'20.x'</span>
+    <span class="hljs-attr">cache:</span> <span class="hljs-string">'npm'</span>
+    <span class="hljs-attr">cache-dependency-path:</span> <span class="hljs-string">'**/package-lock.json'</span>
+</code></pre>
+<h2 id="heading-cache-python">Cache Python</h2>
+<p>Python dependencies can be cached to speed up workflow runs significantly. For <code>pipenv</code>, the dependencies are typically stored under <code>~/.local/share/virtualenvs</code>. This directory contains the virtual environments created by <code>pipenv</code>, which include all the necessary packages and dependencies for your Python projects. By caching this directory, you can avoid the time-consuming process of reinstalling these dependencies during each workflow run.</p>
+<p><strong>for PIPENV</strong></p>
+<pre tabindex="0"><code class="lang-yaml"><span class="hljs-bullet">-</span> <span class="hljs-attr">uses:</span> <span class="hljs-string">actions/cache@v4</span>
+  <span class="hljs-attr">with:</span>
+    <span class="hljs-attr">path:</span> <span class="hljs-string">~/.local/share/virtualenvs</span>
+    <span class="hljs-attr">key:</span> <span class="hljs-string">${{</span> <span class="hljs-string">runner.os</span> <span class="hljs-string">}}-python-${{</span> <span class="hljs-string">steps.setup-python.outputs.python-version</span> <span class="hljs-string">}}-pipenv-${{</span> <span class="hljs-string">hashFiles('Pipfile.lock')</span> <span class="hljs-string">}}</span>
+</code></pre>
+<p><strong>for PIP</strong>  </p>
+<pre tabindex="0"><code class="lang-yaml"><span class="hljs-bullet">-</span> <span class="hljs-attr">uses:</span> <span class="hljs-string">actions/cache@v4</span>
+  <span class="hljs-attr">with:</span>
+    <span class="hljs-attr">path:</span> <span class="hljs-string">~/.cache/pip</span>
+    <span class="hljs-attr">key:</span> <span class="hljs-string">${{</span> <span class="hljs-string">runner.os</span> <span class="hljs-string">}}-pip-${{</span> <span class="hljs-string">hashFiles('**/requirements.txt')</span> <span class="hljs-string">}}</span>
+    <span class="hljs-attr">restore-keys:</span> <span class="hljs-string">|</span>
+      <span class="hljs-string">${{</span> <span class="hljs-string">runner.os</span> <span class="hljs-string">}}-pip-</span>
+</code></pre>
+<h2 id="heading-cache-docker">Cache Docker</h2>
+<p>Significantly speed up your Docker builds by leveraging GitHub's infrastructure to store and retrieve cache layers. Docker provides multiple caching options, including Registry Cache, Inline Cache, and GitHub Cache. Each method has its own advantages, but I recommend using GitHub Cache with the <code>type=gha</code> as it is integrated seamlessly with GitHub Actions, making it easier to set up and manage within your CI/CD workflows.</p>
+<pre tabindex="0"><code class="lang-yaml">    <span class="hljs-bullet">-</span> <span class="hljs-attr">name:</span> <span class="hljs-string">Build</span> <span class="hljs-string">and</span> <span class="hljs-string">push</span>
+      <span class="hljs-attr">uses:</span> <span class="hljs-string">docker/build-push-action@v6</span>
+      <span class="hljs-attr">with:</span>
+        <span class="hljs-comment"># context: docker-springboot</span>
+        <span class="hljs-attr">context:</span> <span class="hljs-string">.</span>
+        <span class="hljs-attr">push:</span> <span class="hljs-literal">true</span>
+        <span class="hljs-attr">tags:</span> <span class="hljs-string">|
+          ${{ inputs.acr}}/${{ github.event.repository.name }}:latest
+</span>        <span class="hljs-comment"># cache-from: type=registry,ref=${{ inputs.acr-url }}/${{ env.containerName }}:buildcache</span>
+        <span class="hljs-comment"># cache-to: type=registry,ref=${{ inputs.acr-url }}/${{ env.containerName }}:buildcache,mode=max</span>
+        <span class="hljs-attr">cache-from:</span> <span class="hljs-string">type=gha</span>
+        <span class="hljs-attr">cache-to:</span> <span class="hljs-string">type=gha,mode=max</span>
+</code></pre>
+<h2 id="heading-cache-go">Cache Go</h2>
+<p>Like other builds, Go builds can benefit significantly from caching. By storing and reusing dependencies and build artifacts, we can drastically reduce build times and improve efficiency. GitHub Actions provides a convenient way to cache Go modules and build outputs, ensuring that subsequent builds are faster and more reliable.</p>
+<pre tabindex="0"><code class="lang-yaml"><span class="hljs-bullet">-</span> <span class="hljs-attr">uses:</span> <span class="hljs-string">actions/cache@v4</span>
+  <span class="hljs-attr">with:</span>
+    <span class="hljs-attr">path:</span> <span class="hljs-string">|
+      ~/.cache/go-build
+      ~/go/pkg/mod
+</span>    <span class="hljs-attr">key:</span> <span class="hljs-string">${{</span> <span class="hljs-string">runner.os</span> <span class="hljs-string">}}-go-${{</span> <span class="hljs-string">hashFiles('**/go.sum')</span> <span class="hljs-string">}}</span>
+    <span class="hljs-attr">restore-keys:</span> <span class="hljs-string">|</span>
+      <span class="hljs-string">${{</span> <span class="hljs-string">runner.os</span> <span class="hljs-string">}}-go-</span>
+</code></pre>
+<p>Similarly, we can use the caching directly using <code>setup-go</code> action</p>
+<pre tabindex="0"><code class="lang-yaml">  <span class="hljs-bullet">-</span> <span class="hljs-attr">uses:</span> <span class="hljs-string">actions/setup-go@v5</span>
+    <span class="hljs-attr">with:</span>
+      <span class="hljs-attr">go-version:</span> <span class="hljs-string">'1.17'</span>
+      <span class="hljs-attr">check-latest:</span> <span class="hljs-literal">true</span>
+      <span class="hljs-attr">cache-dependency-path:</span> <span class="hljs-string">"**/*.sum"</span>
+</code></pre>
+<p>You can find more information and detailed instructions on how to use the caching feature by visiting the <a target="_blank" href="https://github.com/marketplace/actions/cache">Cache action</a> page.</p>
+<p>By following the above examples, you can ensure that your builds are not only faster but also more efficient and reliable. Whether you are working with Go, Node.js, Python, or any other language, the Cache action can help you to implement effective caching in your GitHub Actions workflows.</p>
+    </div>
+    <p class="article__back"><a class="link" href="/blogs/">back to all posts</a></p>
+  </article>
+</main>
+<!-- chrome:footer -->
+<footer class="foot">
+  <div class="container">
+    <a class="foot__mark" href="/">techswitch</a>
+    <ul class="foot__links">
+      <li><a href="/blogs/">blogs</a></li>
+      <li><a href="https://github.com/techswitch-c">github</a></li>
+      <li><a href="https://www.linkedin.com/company/techswitch-c">linkedin</a></li>
+      <li><a href="https://www.youtube.com/@tech_switch">youtube</a></li>
+      <li><a href="https://twitter.com/_techswitch_">x</a></li>
+      <li><a href="https://mr-saikiran.github.io/">founder</a></li>
+      <li><a href="/blogs/rss.xml">rss</a></li>
+    </ul>
+    <p class="foot__legal">&copy; 2026 TechSwitch, Andheri, Mumbai</p>
+  </div>
+</footer>
+<!-- /chrome:footer -->
+<script>document.querySelectorAll('[data-slot] img').forEach((i) => { if (i.complete && !i.naturalWidth) i.remove(); else i.addEventListener('error', () => i.remove(), { once: true }); });</script>
+</body>
+</html>
