@@ -9,6 +9,8 @@ public/                 everything Cloudflare serves
   tokens.css, base.css  design tokens, light and dark
   mode.js               light/dark toggle
   blogs/                generated: index, one folder per post, rss.xml
+  upihub/               UPI Hub demo and download page (/upihub/)
+  upihub/privacy/       UPI Hub privacy policy (the Play Store listing links here)
   _redirects, 404.html  generated: old Hashnode URLs → /blogs/<slug>/
 content/hashnode-rss.xml  snapshot of the Hashnode feed the blog is built from
 scripts/build-blog.mjs    builds public/blogs from the feed
@@ -77,4 +79,6 @@ npm run deploy
   <script>hallmarkSlots({ 'upihub-scan': '/img/upihub-scan.png', 'upihub-pick': '/img/upihub-pick.png', 'upihub-pay': '/img/upihub-pay.png' })</script>
   ```
 
-- **UPI Hub download:** the section links to the GitHub repo. Once a release or a Play Store listing exists, point the link there.
+## UPI Hub page
+
+`/upihub/` links the APK straight from the UPI Hub GitHub release, so no binary lives in this repo. For a new version, update the version, file name, download URL and SHA-256 in `public/upihub/index.html` (the SHA-256 is in the release's `SHA256SUMS`). The iPhone card says no IPA exists; swap it for an App Store or TestFlight link if an iOS app ships. The nav and footer there are copies of the home page's; the blog build does not refresh them.

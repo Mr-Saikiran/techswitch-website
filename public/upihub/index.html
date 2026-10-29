@@ -1,0 +1,193 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>UPI Hub: one scanner for every UPI app · TechSwitch</title>
+<meta name="description" content="UPI Hub scans any UPI QR code and hands the payment to the UPI app you choose. Download the Android app (APK) from TechSwitch.">
+<link rel="canonical" href="https://techswitch.in/upihub/">
+<link rel="icon" href="/img/upihub-icon.png">
+<link rel="alternate" type="application/rss+xml" title="TechSwitch blog" href="/blogs/rss.xml">
+<meta property="og:title" content="UPI Hub: one scanner for every UPI app">
+<meta property="og:description" content="Scan any UPI QR, pick the app that pays. Android, free, no tracking.">
+<meta property="og:url" content="https://techswitch.in/upihub/">
+<meta property="og:image" content="https://techswitch.in/img/upihub-feature.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;500&family=Onest:wght@350;400;500&family=JetBrains+Mono&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/site.css">
+<script>document.documentElement.classList.add('js'); try { const m = localStorage.getItem('mode'); if (m === 'dark' || m === 'light') document.documentElement.dataset.mode = m; } catch {}</script>
+<script src="/mode.js" defer></script>
+</head>
+<body>
+<a class="skip" href="#main">Skip to content</a>
+<!-- chrome:nav -->
+<header class="mast">
+  <nav class="container mast__bar" aria-label="Main">
+    <ul class="mast__links mast__links--start">
+      <li><a href="/#work">work</a></li>
+      <li><a href="/#services">services</a></li>
+    </ul>
+    <a class="wordmark" href="/">techswitch</a>
+    <ul class="mast__links mast__links--end">
+      <li class="mast__blog"><a href="/blogs/">blogs</a></li>
+      <li><button class="mode" type="button" data-mode-toggle aria-pressed="false" hidden>dark</button></li>
+      <li class="mast__mail"><a class="btn btn--secondary btn--small" href="mailto:contact@techswitch.in?subject=TechSwitch%20enquiry">email us</a></li>
+    </ul>
+  </nav>
+</header>
+<!-- /chrome:nav -->
+
+<main id="main">
+  <section class="container banner" aria-labelledby="app-title">
+    <div class="banner__grid">
+      <h1 id="app-title"><img class="case__icon banner__icon" src="/img/upihub-icon.png" width="64" height="64" alt="">upi hub</h1>
+      <div class="lead">
+        <p>One scanner for every UPI app. Scan a QR, pick the app that pays, enter your PIN there.</p>
+        <div class="actions banner__actions">
+          <a class="btn btn--primary" href="#download">download</a>
+          <a class="btn btn--secondary" href="#demo">see the demo</a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="container" id="download" aria-labelledby="download-title">
+    <h2 class="visually-hidden" id="download-title">download</h2>
+    <div class="get">
+      <article class="get__card" aria-labelledby="android-title">
+        <h3 id="android-title">android</h3>
+        <p>Version 0.4.0, a 2.0&nbsp;MB APK for Android 7.0 and newer. Works on every processor type.</p>
+        <div class="actions">
+          <a class="btn btn--primary" href="https://github.com/Mr-Saikiran/upihub/releases/download/v0.4.0/techswitch-upihub-0.4.0.apk">download apk</a>
+          <a class="link" href="https://github.com/Mr-Saikiran/upihub/releases">all releases</a>
+        </div>
+        <dl class="facts">
+          <div><dt>file</dt><dd>techswitch-upihub-0.4.0.apk</dd></div>
+          <div><dt>app id</dt><dd>techswitch.upihub</dd></div>
+          <div><dt>sha-256</dt><dd><code class="hash">0128127cfb1361497c8e860097f5814ce7901b8f4e294d14ac0129dc0b97dc52</code></dd></div>
+          <div><dt>signing cert</dt><dd><code class="hash">e3e54ee19a6628451552a3486e94d5742ebc32beb6dd79afef809986e7b7d00c</code></dd></div>
+        </dl>
+      </article>
+      <article class="get__card get__card--off" aria-labelledby="ios-title">
+        <h3 id="ios-title">iphone</h3>
+        <p>Not available yet. UPI Hub is an Android app today, and there is no IPA to download.</p>
+        <p class="get__note">iPhones install apps only from the App Store or TestFlight, so an iPhone version would arrive there rather than as a file on this page.</p>
+        <div class="actions">
+          <a class="btn btn--secondary" href="mailto:contact@techswitch.in?subject=UPI%20Hub%20for%20iPhone">ask for the iphone version</a>
+        </div>
+        <dl class="facts">
+          <div><dt>status</dt><dd>Not built</dd></div>
+          <div><dt>would ship via</dt><dd>App Store or TestFlight</dd></div>
+        </dl>
+      </article>
+    </div>
+  </section>
+
+  <section class="container case" id="demo" aria-labelledby="demo-title">
+    <div class="case__well">
+      <div class="case__text">
+        <h2 id="demo-title">see it work</h2>
+        <p>The app opens straight into the scanner. Every UPI app on the phone is offered, your default first, and the QR goes across unchanged.</p>
+        <dl class="facts">
+          <div><dt>pays from</dt><dd>A live QR, a screenshot, a UPI ID or a upi:// link</dd></div>
+          <div><dt>works with</dt><dd>Any UPI app on the phone that accepts payment links</dd></div>
+          <div><dt>permissions</dt><dd>The camera, nothing else; no internet access</dd></div>
+          <div><dt>extras</dt><dd>Scan &amp; Pay home-screen widget, light and dark themes</dd></div>
+        </dl>
+        <a class="link" href="https://github.com/Mr-Saikiran/upihub">source on github</a>
+      </div>
+      <div class="case__stage" data-switch>
+        <div class="seg" role="tablist" aria-label="A payment in UPI Hub">
+          <button role="tab" id="t-scan" aria-controls="p-scan" aria-selected="true">scan</button>
+          <button role="tab" id="t-amount" aria-controls="p-amount" aria-selected="false" tabindex="-1">amount</button>
+          <button role="tab" id="t-pick" aria-controls="p-pick" aria-selected="false" tabindex="-1">default</button>
+          <button role="tab" id="t-list" aria-controls="p-list" aria-selected="false" tabindex="-1">your list</button>
+        </div>
+        <div class="screens">
+          <figure class="screen" role="tabpanel" id="p-scan" aria-labelledby="t-scan" data-slot="upihub-scan">
+            <img src="/img/upihub-scan.png" width="923" height="2000" alt="UPI Hub scanner reading a sample UPI QR code, with the default app shown below" decoding="async">
+          </figure>
+          <figure class="screen" role="tabpanel" id="p-amount" aria-labelledby="t-amount" data-slot="upihub-amount">
+            <img src="/img/upihub-amount.png" width="923" height="2000" alt="UPI Hub asking for the amount of a QR code without one, with the pay button showing 150 rupees" decoding="async">
+          </figure>
+          <figure class="screen" role="tabpanel" id="p-pick" aria-labelledby="t-pick" data-slot="upihub-pick">
+            <img src="/img/upihub-chooser.png" width="923" height="2000" alt="UPI Hub asking you to choose your default UPI app from the apps on the phone" decoding="async">
+          </figure>
+          <figure class="screen" role="tabpanel" id="p-list" aria-labelledby="t-list" data-slot="upihub-list">
+            <img src="/img/upihub-settings.png" width="923" height="2000" alt="UPI Hub Payment apps screen: drag to reorder, switch an app off to remove it from the payment list" decoding="async">
+          </figure>
+          <figcaption>Screens rendered from the app with sample apps and a sample QR code.</figcaption>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="container section--tight" id="install" aria-labelledby="install-title">
+    <div class="head">
+      <h2 id="install-title">install in a minute</h2>
+      <p>The APK comes straight from the UPI Hub release on GitHub, built and signed there.</p>
+    </div>
+    <ol class="rows">
+      <li><h3>download the apk</h3><p>Tap download apk on your Android phone. Chrome may warn that the file can harm your device; that warning appears for every app installed from outside the Play Store.</p></li>
+      <li><h3>allow the install</h3><p>Open the file. Android asks once to allow installs from your browser or Files app; turn it on, go back and tap install.</p></li>
+      <li><h3>allow the camera</h3><p>On first launch, allow the camera and pick your default UPI app from the ones on your phone.</p></li>
+      <li><h3>scan and pay</h3><p>Point at a UPI QR, confirm the app, and finish the payment with your PIN in that app.</p></li>
+    </ol>
+  </section>
+
+  <section class="container section--tight" id="trust" aria-labelledby="trust-title">
+    <div class="head">
+      <h2 id="trust-title">private by design</h2>
+      <p>UPI Hub has no account, no ads, no tracking and no internet permission. It never sees your PIN or bank details.</p>
+    </div>
+    <ol class="rows">
+      <li><h3>privacy policy</h3><p>What the app uses and why, in one page. <a class="link" href="/upihub/privacy/">read the privacy policy</a></p></li>
+      <li><h3>check the file</h3><p>Compare the download with the SHA-256 above, for example <code class="hash">sha256sum techswitch-upihub-0.4.0.apk</code>, or with the SHA256SUMS file on the release.</p></li>
+      <li><h3>updates</h3><p>Later versions are signed with the same key and install over this one. New releases appear on the GitHub releases page.</p></li>
+    </ol>
+  </section>
+</main>
+
+<!-- chrome:footer -->
+<footer class="foot">
+  <div class="container">
+    <a class="foot__mark" href="/">techswitch</a>
+    <ul class="foot__links">
+      <li><a href="/blogs/">blogs</a></li>
+      <li><a href="https://github.com/techswitch-c">github</a></li>
+      <li><a href="https://www.linkedin.com/company/techswitch-c">linkedin</a></li>
+      <li><a href="https://www.youtube.com/@tech_switch">youtube</a></li>
+      <li><a href="https://twitter.com/_techswitch_">x</a></li>
+      <li><a href="https://mr-saikiran.github.io/">founder</a></li>
+      <li><a href="/blogs/rss.xml">rss</a></li>
+    </ul>
+    <p class="foot__legal">&copy; 2026 TechSwitch, Andheri, Mumbai</p>
+  </div>
+</footer>
+<!-- /chrome:footer -->
+
+<script>
+document.querySelectorAll('[data-switch]').forEach((root) => {
+  const tabs = [...root.querySelectorAll('[role="tab"]')];
+  const show = (tab, focus) => {
+    tabs.forEach((t) => {
+      const on = t === tab;
+      t.setAttribute('aria-selected', on);
+      t.tabIndex = on ? 0 : -1;
+      document.getElementById(t.getAttribute('aria-controls')).hidden = !on;
+    });
+    if (focus) tab.focus();
+  };
+  tabs.forEach((t, i) => {
+    t.addEventListener('click', () => show(t));
+    t.addEventListener('keydown', (e) => {
+      const step = { ArrowRight: 1, ArrowLeft: -1 }[e.key];
+      if (step) { e.preventDefault(); show(tabs[(i + step + tabs.length) % tabs.length], true); }
+    });
+  });
+  show(tabs[0]);
+});
+</script>
+</body>
+</html>

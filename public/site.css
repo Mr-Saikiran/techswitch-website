@@ -289,3 +289,21 @@ body { font-weight: var(--body-weight); }
 .screens .screen[data-slot] > img { filter: none; mix-blend-mode: normal; opacity: 1; }
 .screens .screen[data-slot]:has(> img)::before { content: none; }
 @media (max-width: 40rem) { .seg button { padding: 0 var(--space-sm); } }
+
+/* upi hub page: the app's own banner, then one card per platform */
+.banner h1:has(.banner__icon) { display: flex; align-items: center; gap: var(--space-md); }
+.banner__icon { flex: none; }
+.banner .lead { display: grid; gap: var(--space-lg); }
+.get { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: var(--gap-columns); }
+.get__card { display: grid; gap: var(--space-lg); align-content: start; justify-items: start; padding: var(--space-2xl) var(--space-xl); border-radius: var(--radius-card); background: var(--color-paper-2); }
+.get__card h3 { font-size: var(--text-section); line-height: 1; }
+.get__card > p { max-width: 44ch; font-size: var(--text-lead); line-height: 1.45; color: var(--color-ink-2); }
+.get__card > p.get__note { font-size: var(--text-md); color: var(--color-muted); }
+/* the iphone card is an outline: there is no file behind it yet */
+.get__card--off { background: transparent; box-shadow: inset 0 0 0 1.5px var(--color-rule-2); }
+.hash { font-family: var(--font-outlier); font-size: var(--text-xs); overflow-wrap: anywhere; }
+.rows p .link { margin-left: var(--space-2xs); }
+@media (max-width: 60rem) {
+  .get { grid-template-columns: minmax(0, 1fr); }
+  .get__card { padding: var(--space-xl) var(--space-lg); }
+}
