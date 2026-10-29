@@ -79,6 +79,20 @@ npm run deploy
   <script>hallmarkSlots({ 'upihub-scan': '/img/upihub-scan.png', 'upihub-pick': '/img/upihub-pick.png', 'upihub-pay': '/img/upihub-pay.png' })</script>
   ```
 
+## Deploying from GitHub
+
+`.github/workflows/deploy.yml` runs `npm run deploy` on every push to `master`
+(and on **Actions → Deploy → Run workflow**). It needs two repository secrets
+(**Settings → Secrets and variables → Actions**):
+
+- `CLOUDFLARE_API_TOKEN`: Cloudflare dashboard → My Profile → API Tokens →
+  Create Token → **Edit Cloudflare Workers** template, with the account and
+  the `techswitch.in` zone.
+- `CLOUDFLARE_ACCOUNT_ID`: shown on the Workers & Pages overview page.
+
+Without them the workflow only builds and warns. Deploying by hand with
+`npm run deploy` keeps working either way.
+
 ## UPI Hub page
 
 `/upihub/` links the APK straight from the UPI Hub GitHub release, so no binary lives in this repo. For a new version, update the version, file name, download URL and SHA-256 in `public/upihub/index.html` (the SHA-256 is in the release's `SHA256SUMS`). The iPhone card links the unsigned preview IPA on the same release (SHA-256 in `SHA256SUMS-ios`); swap it for a TestFlight or App Store link once the app is signed. The nav and footer there are copies of the home page's; the blog build does not refresh them.
