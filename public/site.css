@@ -307,3 +307,25 @@ body { font-weight: var(--body-weight); }
   .get { grid-template-columns: minmax(0, 1fr); }
   .get__card { padding: var(--space-xl) var(--space-lg); }
 }
+
+/* work rows carry their own links in place of a year */
+#work .index__name { grid-column: 1 / 4; }
+#work .index__what { grid-column: 4 / 9; }
+#work .index__stack { grid-column: 9 / 11; }
+.index__links { grid-column: 11 / 13; justify-self: end; display: flex; gap: var(--space-md); white-space: nowrap; }
+
+/* training: four courses across, parted by hairlines */
+.courses { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); margin: 0; padding: 0; list-style: none; border-top: var(--rule-hair) solid var(--color-rule); }
+.course { display: grid; grid-template-rows: auto 1fr auto; gap: var(--space-md); min-height: 280px; padding: var(--space-xl) var(--space-lg) var(--space-lg); border-left: var(--rule-hair) solid var(--color-rule); }
+.course:first-child { padding-left: 0; border-left: 0; }
+.course h3 { font-size: var(--text-section); line-height: 1; }
+.course h3 a { text-decoration: none; }
+.course h3 a:hover { text-decoration: underline; text-decoration-color: var(--color-accent); text-decoration-thickness: 2px; }
+.course > p:not(.course__links) { color: var(--color-ink-2); }
+.course__links { display: flex; flex-wrap: wrap; gap: var(--space-xs) var(--space-md); }
+@media (max-width: 60rem) {
+  #work .index__name, #work .index__what, #work .index__stack, .index__links { grid-column: 1 / -1; justify-self: start; }
+  .courses { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .course { min-height: 0; padding: var(--space-lg) var(--space-md) var(--space-lg) 0; border-left: 0; border-bottom: var(--rule-hair) solid var(--color-rule); }
+}
+@media (max-width: 40rem) { .courses { grid-template-columns: minmax(0, 1fr); } }
