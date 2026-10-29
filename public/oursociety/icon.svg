@@ -1,0 +1,11 @@
+<svg width="512" height="512" viewBox="0 0 512 512" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <rect width="512" height="512" rx="112" fill="#1f5c4d" />
+  <!-- House -->
+  <path d="M256 118 L408 246 H368 V388 H144 V246 H104 Z" fill="#e3a93b" />
+  <rect x="166" y="150" width="34" height="64" fill="#e3a93b" />
+  <!-- Door -->
+  <path d="M226 388 V318 a30 30 0 0 1 60 0 V388 Z" fill="#1f5c4d" />
+  <!-- Leaf -->
+  <path d="M300 300 C300 236 344 200 404 196 C404 260 366 300 300 300 Z" fill="#f7f6f0" />
+  <path d="M304 296 L392 208" stroke="#1f5c4d" stroke-width="8" stroke-linecap="round" />
+</svg>
