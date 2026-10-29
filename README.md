@@ -81,4 +81,4 @@ npm run deploy
 
 ## UPI Hub page
 
-`/upihub/` links the APK straight from the UPI Hub GitHub release, so no binary lives in this repo. For a new version, update the version, file name, download URL and SHA-256 in `public/upihub/index.html` (the SHA-256 is in the release's `SHA256SUMS`). The iPhone card says no IPA exists; swap it for an App Store or TestFlight link if an iOS app ships. The nav and footer there are copies of the home page's; the blog build does not refresh them.
+`/upihub/` links the APK straight from the UPI Hub GitHub release, so no binary lives in this repo. For a new version, update the version, file name, download URL and SHA-256 in `public/upihub/index.html` (the SHA-256 is in the release's `SHA256SUMS`). The iPhone card links the unsigned preview IPA on the same release (SHA-256 in `SHA256SUMS-ios`); swap it for a TestFlight or App Store link once the app is signed. The nav and footer there are copies of the home page's; the blog build does not refresh them.

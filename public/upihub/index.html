@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>UPI Hub: one scanner for every UPI app · TechSwitch</title>
-<meta name="description" content="UPI Hub scans any UPI QR code and hands the payment to the UPI app you choose. Download the Android app (APK) from TechSwitch.">
+<meta name="description" content="UPI Hub scans any UPI QR code and hands the payment to the UPI app you choose. Download the Android APK or the iPhone preview IPA from TechSwitch.">
 <link rel="canonical" href="https://techswitch.in/upihub/">
 <link rel="icon" href="/img/upihub-icon.png">
 <link rel="alternate" type="application/rss+xml" title="TechSwitch blog" href="/blogs/rss.xml">
@@ -71,14 +71,17 @@
       </article>
       <article class="get__card get__card--off" aria-labelledby="ios-title">
         <h3 id="ios-title">iphone</h3>
-        <p>Not available yet. UPI Hub is an Android app today, and there is no IPA to download.</p>
-        <p class="get__note">iPhones install apps only from the App Store or TestFlight, so an iPhone version would arrive there rather than as a file on this page.</p>
+        <p>Preview 0.4.0, an unsigned 0.3&nbsp;MB IPA for iOS 16 and newer.</p>
+        <p class="get__note">Not on the App Store yet. iPhones only run signed apps, so install the IPA with a sideloading tool such as AltStore or Sideloadly, which signs it with your Apple ID. With a free Apple ID it stops opening after 7 days until you sign it again.</p>
         <div class="actions">
-          <a class="btn btn--secondary" href="mailto:contact@techswitch.in?subject=UPI%20Hub%20for%20iPhone">ask for the iphone version</a>
+          <a class="btn btn--secondary" href="https://github.com/Mr-Saikiran/upihub/releases/download/v0.4.0/techswitch-upihub-0.4.0-ios-unsigned.ipa">download ipa</a>
+          <a class="link" href="mailto:contact@techswitch.in?subject=UPI%20Hub%20for%20iPhone">ask for testflight</a>
         </div>
         <dl class="facts">
-          <div><dt>status</dt><dd>Not built</dd></div>
-          <div><dt>would ship via</dt><dd>App Store or TestFlight</dd></div>
+          <div><dt>file</dt><dd>techswitch-upihub-0.4.0-ios-unsigned.ipa</dd></div>
+          <div><dt>sha-256</dt><dd><code class="hash">fba3eb3160bd3155ef1796a53c46a8b33b97693ddf7ee5a3fb6ca78bb8bbc357</code></dd></div>
+          <div><dt>opens</dt><dd>Google Pay, PhonePe and Paytm, plus other UPI apps through their own links or iOS's UPI handler</dd></div>
+          <div><dt>not yet</dt><dd>The home-screen widget; iOS apps also return no payment result</dd></div>
         </dl>
       </article>
     </div>
