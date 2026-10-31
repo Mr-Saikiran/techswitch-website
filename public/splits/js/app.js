@@ -67,15 +67,16 @@
 
   // ---------- tabs ----------
 
-  const TABS = ['planner', 'splits', 'exercises', 'hiit', 'yoga', 'pilates', 'longevity', 'science'];
+  const TABS = ['planner', 'splits', 'exercises', 'diet', 'hiit', 'yoga', 'pilates', 'longevity', 'science'];
   const rendered = {};
-  const RENDER = { splits: renderSplits, exercises: renderExercises, hiit: renderHiit, yoga: renderYoga, pilates: renderPilates, longevity: renderLongevity, science: renderScience };
+  const RENDER = { splits: renderSplits, exercises: renderExercises, diet: renderDiet, hiit: renderHiit, yoga: renderYoga, pilates: renderPilates, longevity: renderLongevity, science: renderScience };
 
   function showTab() {
     const id = TABS.includes(location.hash.slice(1)) ? location.hash.slice(1) : 'planner';
     TABS.forEach((t) => { $('#tab-' + t).hidden = t !== id; });
     document.querySelectorAll('#tabs a').forEach((a) => a.classList.toggle('active', a.dataset.tab === id));
     if (RENDER[id] && !rendered[id]) { RENDER[id](); rendered[id] = true; }
+    else if (RENDER[id] && RENDER[id].refresh) RENDER[id].refresh();
     window.scrollTo(0, 0);
   }
 
@@ -424,6 +425,92 @@
     });
     $('#ex-search').addEventListener('input', draw);
     $('#ex-eq').addEventListener('change', draw);
+  }
+
+  // ---------- diet ----------
+
+  const fmt = (n) => (n == null ? '—' : String(Math.round(n * 10) / 10));
+
+  function foodCard(f, rank, sort) {
+    const cal = { p: f.p * 4, c: f.c * 4, f: f.f * 9 };
+    const tot = cal.p + cal.c + cal.f || 1;
+    const metric = { protein: 'p', leanProtein: 'p', lowCarb: 'c', carbs: 'c', lowFat: 'f', fat: 'f', fiber: 'fib', lowCal: 'kcal' }[sort];
+    return `<article class="card food">
+      <div class="food-head"><span class="rank-no">#${rank}</span><h4>${esc(f.name)}</h4><span class="diet-badge diet-${f.diet}">${WS.DIETS[f.diet].short}</span></div>
+      <div class="macro-bar" title="Share of calories: protein / carbs / fat">
+        <span class="mb-p" style="width:${(cal.p / tot) * 100}%"></span><span class="mb-c" style="width:${(cal.c / tot) * 100}%"></span><span class="mb-f" style="width:${(cal.f / tot) * 100}%"></span></div>
+      <p class="macros"><span${metric === 'kcal' ? ' class="hl"' : ''}><b>${fmt(f.kcal)}</b> kcal</span>
+        <span${metric === 'p' ? ' class="hl"' : ''}><i class="dot mb-p"></i>${fmt(f.p)} g protein</span>
+        <span${metric === 'c' ? ' class="hl"' : ''}><i class="dot mb-c"></i>${fmt(f.c)} g carbs</span>
+        <span${metric === 'f' ? ' class="hl"' : ''}><i class="dot mb-f"></i>${fmt(f.f)} g fat</span>
+        <span${metric === 'fib' ? ' class="hl"' : ''}>${fmt(f.fib)} g fibre</span></p>
+      ${sort === 'leanProtein' ? `<p class="small"><b>${fmt(WS.proteinPer100kcal(f))} g</b> protein per 100 kcal</p>` : ''}
+      ${f.rich.length ? `<div class="chips">${f.rich.map((n) => `<span class="chip">${WS.NUTRIENTS[n]}</span>`).join('')}</div>` : ''}
+      ${f.note ? `<p class="small muted">${esc(f.note)}</p>` : ''}
+      <p class="countries">${f.countries.map((c) => `<span title="${WS.COUNTRIES[c]}">${c}</span>`).join('')}</p>
+    </article>`;
+  }
+
+  function renderDiet() {
+    const panel = $('#tab-diet');
+    const opt = (obj, label) => Object.entries(obj).map(([k, v]) => `<option value="${k}">${label ? label(v) : v}</option>`).join('');
+    panel.innerHTML = `
+      <div class="hero"><h1>Eat for your training.</h1>
+        <p>Top foods for protein, carbs, fats, fibre and every key vitamin and mineral, filtered by what you eat and what's sold where you live. Values are per 100 g and approximate.</p></div>
+      <div class="filters diet-filters">
+        <label>I eat<select id="diet-type">${opt(WS.DIETS, (d) => d.label)}</select></label>
+        <label>Country<select id="diet-country"><option value="">All countries</option>${opt(WS.COUNTRIES)}</select></label>
+        <label>Rank by<select id="diet-sort">${opt(WS.FOOD_SORTS, (s) => s.label)}</select></label>
+        <label>Rich in<select id="diet-nutrient"><option value="">Any nutrient</option>${opt(WS.NUTRIENTS)}</select></label>
+      </div>
+      <div class="pill-group" id="diet-quick">
+        ${[['protein', ''], ['leanProtein', ''], ['lowCarb', ''], ['fiber', ''], ['protein', 'b12'], ['protein', 'iron'], ['protein', 'calcium'], ['protein', 'omega3'], ['protein', 'd'], ['protein', 'c']]
+          .map(([s, n]) => `<button class="pill" data-sort="${s}" data-nutrient="${n}">${n ? WS.NUTRIENTS[n] : WS.FOOD_SORTS[s].label}</button>`).join('')}
+      </div>
+      <div id="diet-target"></div>
+      <div class="grid" id="food-grid"></div>
+      <p class="more-splits" id="food-more"></p>
+      <h2 style="margin-top:28px">Good to know</h2>
+      <div class="notes">
+        <div class="card note"><h4>Vegans and vegetarians</h4><ul>
+          <li><b>B12</b> is only reliable from fortified foods or a supplement.</li>
+          <li><b>Vitamin D</b>: sunlight, fortified milks, UV mushrooms, or a supplement in winter.</li>
+          <li><b>Iron</b> from plants absorbs better with vitamin C (lemon, amla, peppers) in the same meal.</li>
+          <li><b>Omega-3</b>: chia, flax and walnuts give ALA; an algae-oil supplement gives EPA and DHA.</li>
+          <li><b>Iodine</b>: iodised salt or a little seaweed.</li></ul> ${cite(['melina2016'])}</div>
+        <div class="card note"><h4>Plant protein</h4><p>Different plant proteins over the day (dal + rice, tofu + vegetables, beans + grains) give all the essential amino acids; they don't have to be in the same meal. Soy, seitan and pulses are the most protein-dense.</p> ${cite(['melina2016', 'morton2018'])}</div>
+        <div class="card note"><h4>About these numbers</h4><p>Per 100 g as eaten (cooked or raw as named), rounded. "Rich in" means a good source, roughly 20% of a day's needs per 100 g or a normal serving. Country tags show where a food is commonly sold, not the only places you can find it.</p> ${cite(['usdaFdc', 'ifct2017', 'mext2020'])}</div>
+      </div>`;
+
+    let showAll = false;
+    const draw = () => {
+      const diet = $('#diet-type').value, country = $('#diet-country').value;
+      const sort = $('#diet-sort').value, nutrient = $('#diet-nutrient').value;
+      const allowed = WS.DIETS[diet].includes;
+      const key = WS.FOOD_SORTS[sort].key;
+      const list = WS.FOODS
+        .filter((f) => allowed.includes(f.diet) && (!country || f.countries.includes(country)) && (!nutrient || f.rich.includes(nutrient)))
+        .sort((a, b) => key(a) - key(b));
+      const shown = showAll ? list : list.slice(0, 24);
+      $('#food-grid').innerHTML = shown.map((f, i) => foodCard(f, i + 1, sort)).join('') || '<p class="muted">No foods match these filters.</p>';
+      $('#food-more').innerHTML = list.length > shown.length ? `<button id="food-all">Show all ${list.length} foods</button>` : (list.length ? `${list.length} food${list.length === 1 ? '' : 's'}` : '');
+      panel.querySelectorAll('#diet-quick .pill').forEach((b) => b.classList.toggle('active', b.dataset.sort === sort && b.dataset.nutrient === nutrient));
+
+      // Protein target from the planner profile (Morton 2018).
+      const p = state.profile;
+      $('#diet-target').innerHTML = p && p.weight
+        ? `<p class="target"><b>Your protein target: ${Math.round(p.weight * 1.6)}–${Math.round(p.weight * 2.2)} g/day</b> (1.6–2.2 g per kg at ${p.weight} kg). ${cite(['morton2018'])}</p>`
+        : `<p class="target small muted">Add your body weight in the <a href="#planner">Planner</a> to see your daily protein target.</p>`;
+    };
+    panel.addEventListener('change', (e) => { if (e.target.matches('select')) { showAll = false; draw(); } });
+    panel.addEventListener('click', (e) => {
+      const q = e.target.closest('#diet-quick .pill');
+      if (q) { $('#diet-sort').value = q.dataset.sort; $('#diet-nutrient').value = q.dataset.nutrient; showAll = false; draw(); }
+      if (e.target.id === 'food-all') { showAll = true; draw(); }
+    });
+    $('#diet-type').value = 'nonveg';
+    draw();
+    renderDiet.refresh = draw;
   }
 
   // ---------- HIIT, yoga, pilates, longevity ----------
