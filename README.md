@@ -96,3 +96,21 @@ Without them the workflow only builds and warns. Deploying by hand with
 ## UPI Hub page
 
 `/upihub/` links the APK straight from the UPI Hub GitHub release, so no binary lives in this repo. For a new version, update the version, file name, download URL and SHA-256 in `public/upihub/index.html` (the SHA-256 is in the release's `SHA256SUMS`). The iPhone card links the unsigned preview IPA on the same release (SHA-256 in `SHA256SUMS-ios`); swap it for a TestFlight or App Store link once the app is signed. The nav and footer there are copies of the home page's; the blog build does not refresh them.
+
+## Home link on the sub-apps
+
+`public/home-badge.js` draws a small TechSwitch mark, fixed in a corner, that links to the home page. Each app keeps its own navigation. It lives in a shadow root, so it doesn't pick up the app's styles, and it lifts itself above an app's fixed bottom bar on phones. Add it with one line before `</body>` (or in `<head>` with `defer`):
+
+```html
+<script src="/home-badge.js" defer></script>
+```
+
+`data-position="bottom-right"` (or `top-left`, `top-right`) moves it off an app's own controls.
+
+- `/oursociety/`: already added to every exported page, at `bottom-right`. Re-add it after a new export from the `oursociety` repo.
+- `/cvtuner` (Worker `cvtuner`, repo `Mr-Saikiran/cvtuner`) and `/equity` (Worker `techswitch-equity`, repo `Mr-Saikiran/agentic-zerodha`): not added yet. Each needs the line above in its own HTML layout.
+- `/upihub/` and the blog use the home page's nav, where the mark beside the wordmark is the home link.
+
+## Work banners
+
+The work slider on the home page uses `public/img/work-*.png`, screenshots of the live apps at 1440 × 900. Equity has a typographic banner in a `data-slot` until its app is back up on Render and a screenshot can replace it.

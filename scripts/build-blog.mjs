@@ -80,7 +80,7 @@ function page({ title, description, canonical, body, image }) {
 <title>${esc(title)}</title>
 <meta name="description" content="${esc(description)}">
 <link rel="canonical" href="${SITE}${canonical}">
-<link rel="icon" href="/img/upihub-icon.png">
+<link rel="icon" href="/img/techswitch-mark.svg" type="image/svg+xml">
 <link rel="alternate" type="application/rss+xml" title="TechSwitch blog" href="/blogs/rss.xml">
 <meta property="og:title" content="${esc(title)}">
 <meta property="og:description" content="${esc(description)}">

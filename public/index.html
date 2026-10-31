@@ -6,7 +6,7 @@
 <title>TechSwitch: DevSecOps, cloud and MLOps from Mumbai</title>
 <meta name="description" content="TechSwitch builds CI/CD/CT and data pipelines on AWS and Azure: MLOps, AI platforms, cloud migration and DevOps. Makers of UPI Hub, one scanner for every UPI app.">
 <link rel="canonical" href="https://techswitch.in/">
-<link rel="icon" href="/img/upihub-icon.png">
+<link rel="icon" href="/img/techswitch-mark.svg" type="image/svg+xml">
 <link rel="alternate" type="application/rss+xml" title="TechSwitch blog" href="/blogs/rss.xml">
 <meta property="og:title" content="TechSwitch">
 <meta property="og:description" content="CI/CD/CT and data pipelines on AWS and Azure, built and secured.">
@@ -29,7 +29,7 @@
       <li><a href="/#services">services</a></li>
       <li><a href="/#training">training</a></li>
     </ul>
-    <a class="wordmark" href="/">techswitch</a>
+    <a class="wordmark" href="/" aria-label="TechSwitch home"><img class="wordmark__mark" src="/img/techswitch-mark.svg" width="32" height="32" alt=""><span>techswitch</span></a>
     <ul class="mast__links mast__links--end">
       <li class="mast__blog"><a href="/blogs/">blogs</a></li>
       <li><button class="mode" type="button" data-mode-toggle aria-pressed="false" hidden>dark</button></li>
@@ -69,28 +69,52 @@
   <section class="container section--tight" id="work" aria-labelledby="work-title">
     <div class="head">
       <h2 id="work-title">the work, in the open</h2>
-      <p>Three products we build and run, live and open source.</p>
+      <p>Four products we build and run, live and open source.</p>
+      <div class="slider__nav">
+        <button class="btn btn--secondary btn--small" type="button" data-slide="-1" aria-controls="work-slides" aria-label="Previous project">previous</button>
+        <button class="btn btn--secondary btn--small" type="button" data-slide="1" aria-controls="work-slides" aria-label="Next project">next</button>
+      </div>
     </div>
-    <ol class="index">
-      <li class="index__row">
-        <h3 class="index__name"><a href="/equity/">equity</a></h3>
-        <p class="index__what">Zerodha portfolio dashboard with an AI copilot. Read-only, on your own keys.</p>
-        <p class="index__stack">python, ai agents</p>
-        <p class="index__links"><a class="link" href="/equity/">open</a> <a class="link" href="https://github.com/Mr-Saikiran/agentic-zerodha">source</a></p>
-      </li>
-      <li class="index__row">
-        <h3 class="index__name"><a href="/oursociety/">oursociety</a></h3>
-        <p class="index__what">Housing-society app: dues, bills, accounting, notices and polls.</p>
-        <p class="index__stack">next.js, android, ios</p>
-        <p class="index__links"><a class="link" href="/oursociety/">open</a> <a class="link" href="https://github.com/Mr-Saikiran/oursociety-template">source</a></p>
-      </li>
-      <li class="index__row">
-        <h3 class="index__name"><a href="/upihub/">upi hub</a></h3>
-        <p class="index__what">Android and iPhone app: scan any UPI QR, pay with the app you choose.</p>
-        <p class="index__stack">kotlin, swiftui</p>
-        <p class="index__links"><a class="link" href="/upihub/">open</a> <a class="link" href="https://github.com/Mr-Saikiran/upihub">source</a></p>
-      </li>
-    </ol>
+    <div class="slider">
+      <ol class="slides" id="work-slides" tabindex="0" aria-label="Projects">
+        <li class="slide" id="work-cvtuner">
+          <figure class="slide__art"><img src="/img/work-cvtuner.png" width="1440" height="900" alt="CVTuner profile screen: your base resume and the sections you can show, hide and reorder" loading="lazy" decoding="async"></figure>
+          <div class="slide__text">
+            <h3><a href="/cvtuner">cvtuner</a></h3>
+            <p>Tune your resume to any job description, with an ATS check. PDF and Word, fitted to two pages.</p>
+            <p class="slide__stack">next.js, ai, browser extension</p>
+            <p class="slide__links"><a class="link" href="/cvtuner">open</a> <a class="link" href="https://github.com/Mr-Saikiran/cvtuner">source</a></p>
+          </div>
+        </li>
+        <li class="slide" id="work-equity">
+          <figure class="slide__art slide__art--type" data-slot="work-equity" data-alt="Equity portfolio dashboard"><b>equity</b><span>portfolio, news and insights, with a copilot beside them</span></figure>
+          <div class="slide__text">
+            <h3><a href="/equity/">equity</a></h3>
+            <p>Zerodha portfolio dashboard with an AI copilot. Read-only, on your own keys.</p>
+            <p class="slide__stack">python, ai agents</p>
+            <p class="slide__links"><a class="link" href="/equity/">open</a> <a class="link" href="https://github.com/Mr-Saikiran/agentic-zerodha">source</a></p>
+          </div>
+        </li>
+        <li class="slide" id="work-oursociety">
+          <figure class="slide__art"><img src="/img/work-oursociety.png" width="1440" height="900" alt="OurSociety read-only demo dashboard for a sample society: dues collected, announcements and who has paid" loading="lazy" decoding="async"></figure>
+          <div class="slide__text">
+            <h3><a href="/oursociety/">oursociety</a></h3>
+            <p>Housing-society app: dues, bills, accounting, notices and polls.</p>
+            <p class="slide__stack">next.js, android, ios</p>
+            <p class="slide__links"><a class="link" href="/oursociety/">open</a> <a class="link" href="https://github.com/Mr-Saikiran/oursociety-template">source</a></p>
+          </div>
+        </li>
+        <li class="slide" id="work-upihub">
+          <figure class="slide__art"><img src="/img/upihub-feature.png" width="1024" height="500" alt="UPI Hub: one scanner for all your UPI apps. Pick, pay, done." loading="lazy" decoding="async"></figure>
+          <div class="slide__text">
+            <h3><a href="/upihub/">upi hub</a></h3>
+            <p>Android and iPhone app: scan any UPI QR, pay with the app you choose.</p>
+            <p class="slide__stack">kotlin, swiftui</p>
+            <p class="slide__links"><a class="link" href="/upihub/">open</a> <a class="link" href="https://github.com/Mr-Saikiran/upihub">source</a></p>
+          </div>
+        </li>
+      </ol>
+    </div>
   </section>
 
   <section class="container case" id="upihub" aria-labelledby="upihub-title">
@@ -271,6 +295,35 @@
 </footer>
 <!-- /chrome:footer -->
 
+<script>
+// work slider: the buttons step one banner at a time and switch off at either end
+(() => {
+  const rail = document.getElementById('work-slides');
+  if (!rail) return;
+  const buttons = [...document.querySelectorAll('[data-slide]')];
+  const slides = [...rail.querySelectorAll('.slide')];
+  const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const pad = () => parseFloat(getComputedStyle(rail).paddingLeft) || 0;
+  const offset = (s) => s.offsetLeft - slides[0].offsetLeft;
+  const current = () => slides.reduce((best, s, i) => (Math.abs(offset(s) - rail.scrollLeft) < Math.abs(offset(slides[best]) - rail.scrollLeft) ? i : best), 0);
+  const sync = () => {
+    const end = rail.scrollWidth - rail.clientWidth - 2;
+    buttons.forEach((b) => { b.disabled = b.dataset.slide === '-1' ? rail.scrollLeft <= 2 : rail.scrollLeft >= end; });
+  };
+  buttons.forEach((b) => b.addEventListener('click', () => {
+    const i = Math.max(0, Math.min(slides.length - 1, current() + Number(b.dataset.slide)));
+    const left = offset(slides[i]);
+    const from = rail.scrollLeft;
+    rail.scrollTo({ left, behavior: reduce ? 'auto' : 'smooth' });
+    // some browsers ignore smooth scrolling here; land on the slide anyway
+    setTimeout(() => { if (Math.abs(rail.scrollLeft - from) < 1 && Math.abs(left - from) > 1) rail.scrollLeft = left; sync(); }, 450);
+  }));
+  rail.addEventListener('scroll', sync, { passive: true });
+  rail.addEventListener('scrollend', sync);
+  addEventListener('resize', sync);
+  sync();
+})();
+</script>
 <script>
 document.querySelectorAll('[data-switch]').forEach((root) => {
   const tabs = [...root.querySelectorAll('[role="tab"]')];
