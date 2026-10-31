@@ -3,6 +3,7 @@
 /archive /blogs/ 301
 /blog /blogs/ 301
 /blog/* /blogs/:splat 301
+/claude-ccar-f-certification-sample-questions /blogs/claude-ccar-f-certification-sample-questions/ 301
 /part-2-artifacts-attestation-for-builds-in-github-actions /blogs/part-2-artifacts-attestation-for-builds-in-github-actions/ 301
 /cache-docker-python-javamaven-nodenpm-go-modules-in-github-actions /blogs/cache-docker-python-javamaven-nodenpm-go-modules-in-github-actions/ 301
 /secure-password-storage-in-python-a-guide-to-keyring /blogs/secure-password-storage-in-python-a-guide-to-keyring/ 301

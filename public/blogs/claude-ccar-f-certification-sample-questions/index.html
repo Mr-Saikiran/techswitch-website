@@ -1,0 +1,322 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Claude CCAR-F Certification: Sample Questions with Answers: TechSwitch</title>
+<meta name="description" content="16 sample questions on multi-agent systems, Claude Code in CI and structured extraction. These may hit your CCAR-F exam: I cleared it on my second attempt.">
+<link rel="canonical" href="https://techswitch.in/blogs/claude-ccar-f-certification-sample-questions/">
+<link rel="icon" href="/img/techswitch-mark.svg" type="image/svg+xml">
+<link rel="alternate" type="application/rss+xml" title="TechSwitch blog" href="/blogs/rss.xml">
+<meta property="og:title" content="Claude CCAR-F Certification: Sample Questions with Answers: TechSwitch">
+<meta property="og:description" content="16 sample questions on multi-agent systems, Claude Code in CI and structured extraction. These may hit your CCAR-F exam: I cleared it on my second attempt.">
+<meta property="og:url" content="https://techswitch.in/blogs/claude-ccar-f-certification-sample-questions/">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;500&family=Onest:wght@350;400;500&family=JetBrains+Mono&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/site.css">
+<script>document.documentElement.classList.add('js'); try { const m = localStorage.getItem('mode'); if (m === 'dark' || m === 'light') document.documentElement.dataset.mode = m; } catch {}</script>
+<script src="/mode.js" defer></script>
+</head>
+<body>
+<a class="skip" href="#main">Skip to content</a>
+<!-- chrome:nav -->
+<header class="mast">
+  <nav class="container mast__bar" aria-label="Main">
+    <ul class="mast__links mast__links--start">
+      <li><a href="/#work">work</a></li>
+      <li><a href="/#services">services</a></li>
+      <li><a href="/#training">training</a></li>
+    </ul>
+    <a class="wordmark" href="/" aria-label="TechSwitch home"><img class="wordmark__mark" src="/img/techswitch-mark.svg" width="32" height="32" alt=""><span>techswitch</span></a>
+    <ul class="mast__links mast__links--end">
+      <li class="mast__blog"><a href="/blogs/">blogs</a></li>
+      <li><button class="mode" type="button" data-mode-toggle aria-pressed="false" hidden>dark</button></li>
+      <li class="mast__mail"><a class="btn btn--secondary btn--small" href="mailto:contact@techswitch.in?subject=TechSwitch%20enquiry">email us</a></li>
+    </ul>
+  </nav>
+</header>
+<!-- /chrome:nav -->
+<main id="main">
+  <article class="container article">
+    <header class="article__head">
+      <a class="link" href="/blogs/">all posts</a>
+      <h1>Claude CCAR-F Certification: Sample Questions with Answers</h1>
+      <div class="article__meta">
+        <time datetime="2026-10-31">31 oct 2026</time>
+        <span>15 min read</span>
+      </div>
+      <ul class="tags" aria-label="Tags"><li>claude</li><li>anthropic</li><li>certification</li><li>ai agents</li></ul>
+    </header>
+    
+    <div class="prose">
+<p>I cleared the Claude CCAR-F certification on my second attempt. These are sample questions I practised with, and questions like these may hit your exam. Each one has the answer and a short reason. Try each question first, then open the answer.</p>
+<p>The questions are grouped in three areas: a multi-agent research system, Claude Code in a CI/CD pipeline, and structured data extraction with tool use.</p>
+
+<h2 id="multi-agent">Multi-agent research system</h2>
+<p>Most of these questions use the same scenario: a coordinator agent with four subagents (web search, document analysis, synthesis and a report generator).</p>
+
+<div class="quiz">
+<h3 id="q1">1. Too many tools per agent</h3>
+<p>You've configured the system so that all four subagents have access to the complete set of 18 tools. During testing, agents frequently call tools outside their specialization: the synthesis agent attempts web searches, and the report generator tries to analyze documents. What is the primary cause of this poor tool selection behavior?</p>
+<ol type="A">
+<li>Choosing from 18 tools instead of 4-5 relevant ones increases decision complexity beyond reliable selection thresholds.</li>
+<li>The agents' role descriptions in their system prompts conflict with having access to tools outside that role.</li>
+<li>The tool definitions consume too much context window space, leaving insufficient room for task content.</li>
+<li>The coordinator cannot track which capabilities each subagent has, leading to misrouted tasks.</li>
+</ol>
+<details><summary>Show answer</summary>
+<p><strong>A.</strong> The more tools an agent can choose from, the less reliably it picks the right one. Give each subagent only the few tools its role needs.</p>
+</details>
+</div>
+
+<div class="quiz">
+<h3 id="q2">2. Delegation that never happens</h3>
+<p>The coordinator agent has AgentDefinitions configured for all four specialized subagents, each with appropriate descriptions, prompts, and tool restrictions. During testing, you notice the coordinator correctly reasons about when to delegate (it generates messages like "I'll ask the web search agent to find sources on this topic") but no subagent execution ever occurs. The coordinator then proceeds as if the delegation happened and continues with incomplete information. Logs show no errors. What is the most likely cause?</p>
+<ol type="A">
+<li>The coordinator's max_tokens setting is too low, causing the Task tool invocation to be truncated before the subagent type parameter can be specified.</li>
+<li>The coordinator's allowedTools configuration doesn't include "Task", so while it can reason about delegation, it cannot invoke the tool required to spawn subagents.</li>
+<li>Subagent context isolation means task descriptions from the coordinator don't automatically reach subagents; you need to configure explicit context forwarding in ClaudeAgentOptions.</li>
+<li>The AgentDefinitions are configured correctly, but the coordinator's system prompt doesn't explicitly list the available subagent types, preventing the model from knowing they can be invoked.</li>
+</ol>
+<details><summary>Show answer</summary>
+<p><strong>B.</strong> Subagents are spawned through the Task tool. If <code>Task</code> is not in the coordinator's <code>allowedTools</code>, it can only talk about delegating. Nothing fails, so the logs stay clean.</p>
+</details>
+</div>
+
+<div class="quiz">
+<h3 id="q3">3. Giving the synthesis subagent its input</h3>
+<p>After the web search and document analysis subagents complete their tasks, the coordinator needs to spawn the synthesis subagent to synthesize the findings. What is the correct approach for providing the synthesis subagent with the information it needs?</p>
+<ol type="A">
+<li>Provide the subagent with tool definitions that allow it to request outputs from other subagents via callbacks.</li>
+<li>Include the complete findings from both subagents directly in the synthesis subagent's prompt.</li>
+<li>Pass reference identifiers and configure the subagent with read access to a shared memory store where other subagents deposited their results.</li>
+<li>Spawn the subagent with only a brief task description, relying on automatic context inheritance from the coordinator.</li>
+</ol>
+<details><summary>Show answer</summary>
+<p><strong>B.</strong> A subagent starts with a fresh context and inherits nothing from the coordinator. Everything it needs goes into its prompt.</p>
+</details>
+</div>
+
+<div class="quiz">
+<h3 id="q4">4. How subagents share results</h3>
+<p>The web search agent has gathered several relevant sources for a research topic. The document analysis agent now needs to examine these sources. How does information typically flow between these two specialized subagents?</p>
+<ol type="A">
+<li>The agents communicate through an event-driven message queue, with the document analysis agent subscribing to web search completion events.</li>
+<li>The web search agent directly invokes the document analysis agent, passing the discovered sources as parameters.</li>
+<li>The coordinator agent receives the web search agent's output and includes relevant findings in the prompt when invoking the document analysis agent.</li>
+<li>Both agents access a shared memory store where the web search agent writes findings and the document analysis agent reads them.</li>
+</ol>
+<details><summary>Show answer</summary>
+<p><strong>C.</strong> Subagents do not talk to each other. Results go back to the coordinator, which passes what is relevant to the next subagent.</p>
+</details>
+</div>
+
+<div class="quiz">
+<h3 id="q5">5. Lost source attribution</h3>
+<p>In production, final reports frequently contain claims without proper source attribution. Investigation shows that while the web search and document analysis agents correctly attach citations to their outputs, the synthesis agent loses track of which sources support which conclusions when combining findings. What's the most effective architectural change?</p>
+<ol type="A">
+<li>Add a verification step where the report generator uses semantic similarity matching against original sources to reconstruct which claims came from which documents.</li>
+<li>Have the coordinator inject source identifier prefixes into text before each handoff, then parse these prefixes at report generation to reconstruct citations.</li>
+<li>Maintain complete transcripts of all subagent interactions and add a citation-resolution agent to analyze logs and determine attributions before report generation.</li>
+<li>Require all subagents to output structured claim-source mappings that the synthesis agent must preserve and merge when combining findings from multiple sources.</li>
+</ol>
+<details><summary>Show answer</summary>
+<p><strong>D.</strong> Keep attribution as structured data through every handoff. The other options try to rebuild it after it is lost.</p>
+</details>
+</div>
+
+<div class="quiz">
+<h3 id="q6">6. Simple queries run the whole pipeline</h3>
+<p>In production, you observe that simple fact-checking queries (e.g., "What year was the Paris Climate Agreement signed?") traverse all four subagents sequentially, consuming 40+ seconds and significant tokens per query. Complex comparative research benefits from the full pipeline. Your query distribution is diverse and evolving as users discover new applications. What's the most effective approach to optimize for varying query complexity?</p>
+<ol type="A">
+<li>Have the coordinator analyze each query and dynamically decide which subagents to invoke based on its assessment of query requirements.</li>
+<li>Train a query complexity classifier on labeled historical data to predict optimal subagent combinations, retraining periodically as query patterns evolve.</li>
+<li>Create a fast-path for factual questions that bypasses subagents entirely, routing all other queries through the complete pipeline to ensure research thoroughness.</li>
+<li>Implement pattern-based routing that categorizes queries by structure (single-fact vs. comparative vs. analytical) and maps each category to a predefined combination.</li>
+</ol>
+<details><summary>Show answer</summary>
+<p><strong>A.</strong> The query mix keeps changing, so fixed routes and trained classifiers fall behind. Let the coordinator decide per query which subagents it needs.</p>
+</details>
+</div>
+
+<div class="quiz">
+<h3 id="q7">7. Conflicting findings and uncertainty</h3>
+<p>Production reviews reveal inconsistent handling of uncertainty in final reports. Sometimes conflicting subagent findings are synthesized into a single confident statement (losing nuance), while other times reports over-hedge with excessive qualifications (becoming unhelpful). When the web search agent returns "industry analysts estimate $50B market size (methodology varies)" and the document analysis agent returns "peer-reviewed study estimates $35B (±$7B, 95% CI)," the coordinator either picks one arbitrarily or produces vague statements like "the market may be $35B-$50B depending on factors." What systematic approach best addresses this?</p>
+<ol type="A">
+<li>Implement a confidence calibration layer that normalizes subagent uncertainty expressions to standardized probability scores (0.0-1.0), then weight-average findings by their calibrated confidence.</li>
+<li>Instruct the synthesis agent to structure reports with explicit sections distinguishing well-established findings from contested ones, preserving original source characterizations and methodological context.</li>
+<li>Configure subagents to only report findings meeting a high-confidence threshold, filtering uncertain information before it reaches the coordinator.</li>
+<li>Add a verification subagent that cross-references findings across sources, only passing claims to synthesis that are corroborated by at least two independent sources.</li>
+</ol>
+<details><summary>Show answer</summary>
+<p><strong>B.</strong> Show the conflict with each source's method, so the reader can judge. Averaging or filtering removes exactly the context the reader needs.</p>
+</details>
+</div>
+
+<div class="quiz">
+<h3 id="q8">8. Every output turned into bullet points</h3>
+<p>A user expands the research system beyond its original web-search agent by adding specialized data sources. A financial API agent returns structured JSON containing revenue, margins, and growth rates. A news-monitoring agent returns prose summaries of recent developments. A patent-analysis agent returns structured lists of technology areas. The synthesis agent combines these results into executive briefings. Currently, it converts everything into bullet points, causing financial comparisons to lose tabular clarity and news summaries to lose their narrative flow. What change would most improve briefing quality?</p>
+<ol type="A">
+<li>Standardize all subagent outputs as prose summaries with inline citations.</li>
+<li>Standardize all subagent outputs as JSON containing fields for claim, evidence, source, and confidence.</li>
+<li>Update the synthesis agent to render each content type appropriately: financial data as tables, news as prose, and technology areas as structured lists.</li>
+<li>Add a format-conversion layer that transforms every subagent result into a common intermediate representation before synthesis.</li>
+</ol>
+<details><summary>Show answer</summary>
+<p><strong>C.</strong> The problem is in synthesis, so fix it there. Each content type keeps the format that suits it. Forcing one format on all of them is the problem you started with.</p>
+</details>
+</div>
+
+<h2 id="claude-code-ci">Claude Code in CI/CD</h2>
+
+<div class="quiz">
+<h3 id="q9">9. Capping turns and cost per run</h3>
+<p>You are integrating Claude Code into your CI/CD pipeline. The system runs automated code reviews, generates test cases, and provides feedback on pull requests. You need to design prompts that provide actionable feedback and minimize false positives. During initial testing of the automated review pipeline, you notice that reviews on large pull requests containing more than 50 changed files sometimes take over 20 minutes and cost $8-$12 per run because of extensive agentic loops. Claude reads files, runs analysis tools, and iterates many times. Your team needs each invocation to abort once it reaches both a fixed iteration count and a fixed dollar amount, enforced by Claude Code itself rather than by the surrounding job runner. Which configuration change directly enforces both per-invocation caps?</p>
+<ol type="A">
+<li>Switch the <code>--model</code> flag to a smaller, less expensive model so each iteration uses fewer tokens and has a lower per-call cost.</li>
+<li>Set <code>timeout-minutes: 5</code> on the GitHub Actions job step and monitor per-run costs through the Anthropic Console usage dashboard.</li>
+<li>Add <code>--max-turns 10 --max-budget-usd 2.00</code> to the <code>claude -p</code> invocation to cap iterations and spending.</li>
+<li>Set <code>--permission-mode dontAsk</code> to automatically deny tool-permission requests not included in the explicitly allowed set.</li>
+</ol>
+<details><summary>Show answer</summary>
+<p><strong>C.</strong> <code>--max-turns</code> caps iterations and <code>--max-budget-usd</code> caps spend, and Claude Code enforces both. A job timeout is the runner's limit, and a cheaper model caps neither.</p>
+</details>
+</div>
+
+<div class="quiz">
+<h3 id="q10">10. Review that ignores the rest of the repo</h3>
+<p>You are setting up a non-interactive automated code review pipeline using Claude Code. You want Claude to analyze a pulled Git diff (<code>git diff</code>) against the main branch and apply a custom set of code review instructions. However, you notice that when you run the pipeline, Claude only looks at the raw diff text itself and completely stops using its file-reading or code navigation tools. As a result, it fails to inspect the broader codebase repository context, which is critical because the diff modifies a core function called by many other external modules. Which change to the CLI invocation will cause Claude to read related files in the repository while still successfully applying your custom review instructions?</p>
+<ol type="A">
+<li>Replace <code>--system-prompt</code> with <code>--append-system-prompt</code> so your review instructions are added to Claude Code's default prompt instead of overwriting the built-in guidance for using file-reading and code navigation tools.</li>
+<li>Keep <code>--system-prompt</code> and add <code>--allowedTools "Read, Glob, Grep"</code> so that the non-interactive mode permits file system tools that it otherwise disables.</li>
+<li>Stop piping the diff via stdin and instead embed the diff contents inside the prompt string, so Claude Code treats the invocation as an agentic session rather than a stream-processing one.</li>
+<li>Remove <code>--system-prompt</code> entirely and place the review instructions in a CLAUDE.md file at the repo root, since <code>--system-prompt</code> is incompatible with tool use under <code>-p</code>.</li>
+</ol>
+<details><summary>Show answer</summary>
+<p><strong>A.</strong> <code>--system-prompt</code> replaces Claude Code's whole default prompt, including its guidance on using tools. <code>--append-system-prompt</code> keeps that guidance and adds your instructions.</p>
+</details>
+</div>
+
+<h2 id="extraction">Structured extraction and tool use</h2>
+<p>These questions use a system that extracts information from unstructured documents, validates it against JSON schemas and passes it to downstream systems.</p>
+
+<div class="quiz">
+<h3 id="q11">11. Unparseable JSON</h3>
+<p>Your extraction pipeline occasionally receives responses that cannot be parsed as valid JSON, causing downstream processing failures. The current implementation prompts Claude to return JSON in the response text and then parses it. What is the most reliable approach to ensure Claude returns valid, schema-compliant structured data?</p>
+<ol type="A">
+<li>Add explicit formatting instructions to the prompt with JSON examples, emphasizing that Claude must return only valid JSON with no surrounding text.</li>
+<li>Use regular expressions to locate and extract JSON from the response text, handling cases where Claude includes explanatory text around the JSON block.</li>
+<li>Define a tool with a JSON schema specifying the expected structure, using tool use to constrain Claude's output to schema-compliant JSON.</li>
+<li>Implement a retry loop that catches JSON parsing errors and re-prompts Claude with the error details, asking it to correct the malformed output.</li>
+</ol>
+<details><summary>Show answer</summary>
+<p><strong>C.</strong> A tool's input schema makes Claude return structured arguments that match the schema. Prompt instructions, regex and retries treat the symptom.</p>
+</details>
+</div>
+
+<div class="quiz">
+<h3 id="q12">12. Forcing the first tool call</h3>
+<p>Your pipeline uses a tool called <code>extract_metadata</code> with a JSON schema for paper details. You've also defined <code>lookup_citations</code> and <code>verify_doi</code> tools for enrichment. During testing, you notice that when users include requests like "extract the metadata and tell me how cited it is," Claude sometimes calls <code>lookup_citations</code> first, which fails because it needs the DOI that <code>extract_metadata</code> would provide. What's the most effective way to ensure structured metadata extraction happens first?</p>
+<ol type="A">
+<li>Set tool choice to <code>{"type": "tool", "name": "extract_metadata"}</code> and process the enrichment requests in subsequent turns after receiving the extracted metadata.</li>
+<li>Set tool choice to <code>"any"</code> so Claude must use a tool, combined with system prompt instructions prioritizing <code>extract_metadata</code>.</li>
+<li>Set tool choice to <code>{"type": "tool", "name": "extract_metadata"}</code> for every API call in the pipeline, ensuring Claude always extracts metadata before any enrichment can occur.</li>
+<li>Set tool choice to <code>"auto"</code> and reorder the tool definitions so <code>extract_metadata</code> appears first in the tools array, since Claude prioritizes earlier-listed tools.</li>
+</ol>
+<details><summary>Show answer</summary>
+<p><strong>A.</strong> Force <code>extract_metadata</code> on the first call only, then let later turns use the enrichment tools. Forcing it on every call (C) means the enrichment tools never run. <code>"any"</code> doesn't say which tool, and tool order sets no priority.</p>
+</details>
+</div>
+
+<div class="quiz">
+<h3 id="q13">13. Batch or real-time</h3>
+<p>Your extraction system processes two document types: standard monthly reports, which are archived after processing, and urgent exception reports, which must trigger business alerts within 30 minutes of receipt. Both use the same JSON schema. You want to minimize API costs while meeting the latency requirements. How should you architect the processing pipeline?</p>
+<ol type="A">
+<li>Submit all documents to the Message Batches API with custom_id values for tracking. When results arrive, immediately process urgent documents and trigger delayed alerts for exceptions.</li>
+<li>Route standard reports to the Message Batches API for 50% cost savings, and route urgent exception reports to the real-time Messages API.</li>
+<li>Queue all documents and submit hourly batches, flagging urgent documents for expedited handling when batch results return.</li>
+<li>Submit all documents to the real-time Messages API to ensure consistent processing latency across document types.</li>
+</ol>
+<details><summary>Show answer</summary>
+<p><strong>B.</strong> Batches cost half as much but can take up to 24 hours, with no latency guarantee. Batch the reports that can wait and send the urgent ones in real time.</p>
+</details>
+</div>
+
+<div class="quiz">
+<h3 id="q14">14. Valid JSON, empty fields</h3>
+<p>After implementing tool use with strict schema definitions, JSON syntax errors are eliminated, but 5% of extractions still have valid JSON with empty arrays or null values for required fields like citations and methodology. Spot-checking reveals that source documents contain this information, but in varied formats: inline citations vs. bibliographies, methodology sections vs. details embedded in introductions. What's the most effective way to address these failures?</p>
+<ol type="A">
+<li>Modify your schema to make citations and methodology optional, and flag incomplete records for manual review rather than failing validation.</li>
+<li>Build a regex-based post-processing layer that scans source documents for citation patterns and methodology keywords, populating empty fields when the model fails to extract.</li>
+<li>Add few-shot examples demonstrating extractions from documents with varied structures, showing how to identify citations in different formats and locate methodology details across section types.</li>
+<li>Implement retry logic that re-sends requests when validation detects empty required fields.</li>
+</ol>
+<details><summary>Show answer</summary>
+<p><strong>C.</strong> The information is in the documents, so the model doesn't recognise it in unfamiliar layouts. Examples of each layout fix that. Retries repeat the same miss.</p>
+</details>
+</div>
+
+<div class="quiz">
+<h3 id="q15">15. Inconsistent values in one field</h3>
+<p>Your extraction system parses e-commerce product descriptions to extract specifications like dimensions, weight, and materials into JSON. Despite having a well-defined schema, the model inconsistently extracts the "materials" field: sometimes returning "cotton blend", other times "Cotton/Polyester mix", and occasionally omitting the field when material information is clearly present in the source. What's the most effective way to improve extraction consistency?</p>
+<ol type="A">
+<li>Set temperature to 0 to eliminate randomness and ensure deterministic outputs.</li>
+<li>Switch to a more capable model tier since inconsistent extraction indicates insufficient model capability.</li>
+<li>Make the "materials" field required instead of optional in the schema to force the model to always extract a value.</li>
+<li>Add few-shot examples showing 2-3 complete input-output pairs with standardized material description formats.</li>
+</ol>
+<details><summary>Show answer</summary>
+<p><strong>D.</strong> The model has no standard to follow. Examples show it the format you want. Temperature 0 makes output repeatable, not standardised.</p>
+</details>
+</div>
+
+<div class="quiz">
+<h3 id="q16">16. A skills array with three problems</h3>
+<p>Your schema includes a <code>skills: string[]</code> field. Production monitoring reveals three consistency issues: (1) compound phrases like "Python and SQL" are sometimes kept as one entry, sometimes split; (2) implied but unstated skills occasionally appear in extractions; (3) similar documents produce wildly different array lengths (5-10 vs 40+ entries). Your prompt currently says "Extract all skills mentioned." What's the most effective improvement?</p>
+<ol type="A">
+<li>Add few-shot examples demonstrating compound phrase handling, explicit mention criteria, and appropriate entry granularity.</li>
+<li>Add constraints: "Extract 10-20 skills maximum, one skill per entry, only explicitly named skills."</li>
+<li>Add post-extraction normalization that maps skills to a canonical taxonomy and deduplicates similar entries.</li>
+<li>Enrich the schema to <code>skill: string, confidence: float, source_quote: string</code> to capture extraction confidence.</li>
+</ol>
+<details><summary>Show answer</summary>
+<p><strong>A.</strong> A few examples fix all three problems at once. A hard count (B) cuts real skills from long documents, and post-processing (C) can't remove skills the model invented.</p>
+</details>
+</div>
+
+<h2 id="tips">What helped me pass</h2>
+<ul>
+<li>Most questions describe a symptom and ask for the root cause. Ignore answers that add a layer to work around the problem.</li>
+<li>If the model "doesn't know" a format or standard, the answer is usually few-shot examples. If the output must match a structure, it is tool use with a schema.</li>
+<li>Subagents share nothing on their own. The coordinator passes everything, in the prompt.</li>
+<li>Learn the Claude Code CLI flags: <code>-p</code>, <code>--max-turns</code>, <code>--max-budget-usd</code>, <code>--system-prompt</code> and <code>--append-system-prompt</code>, <code>--allowedTools</code>, <code>--permission-mode</code>.</li>
+</ul>
+<p>Good luck with your exam.</p>
+
+<h3 id="heading-wanna-thank-me">Wanna thank me? 👇🏼</h3>
+<p><a target="_blank" href="https://www.buymeacoffee.com/techswitch"><img loading="lazy" src="https://cdn.buymeacoffee.com/buttons/v2/default-yellow.png" alt="Buy Me A Coffee" /></a></p>
+    </div>
+    <p class="article__back"><a class="link" href="/blogs/">back to all posts</a></p>
+  </article>
+</main>
+<!-- chrome:footer -->
+<footer class="foot">
+  <div class="container">
+    <a class="foot__mark" href="/">techswitch</a>
+    <ul class="foot__links">
+      <li><a href="/blogs/">blogs</a></li>
+      <li><a href="https://github.com/techswitch-c">github</a></li>
+      <li><a href="https://www.linkedin.com/company/techswitch-c">linkedin</a></li>
+      <li><a href="https://www.youtube.com/@tech_switch">youtube</a></li>
+      <li><a href="https://twitter.com/_techswitch_">x</a></li>
+      <li><a href="https://mr-saikiran.github.io/">founder</a></li>
+      <li><a href="/blogs/rss.xml">rss</a></li>
+    </ul>
+    <p class="foot__legal">&copy; 2026 TechSwitch, Andheri, Mumbai</p>
+  </div>
+</footer>
+<!-- /chrome:footer -->
+<script>document.querySelectorAll('[data-slot] img').forEach((i) => { if (i.complete && !i.naturalWidth) i.remove(); else i.addEventListener('error', () => i.remove(), { once: true }); });</script>
+</body>
+</html>

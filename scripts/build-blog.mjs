@@ -1,18 +1,23 @@
-// Builds /blogs from a Hashnode RSS feed, the only feed Hashnode serves without a Pro plan.
+// Builds /blogs from a Hashnode RSS feed, the only feed Hashnode serves without a Pro plan,
+// plus any posts written here in content/posts/<slug>.html.
 //
 //   node scripts/build-blog.mjs                      uses the snapshot in content/hashnode-rss.xml
 //   node scripts/build-blog.mjs --feed <url>          fetches a fresh feed and refreshes the snapshot
 //
+// A local post opens with a JSON comment, then its HTML body:
+//   <!-- { "title": "...", "brief": "...", "date": "2026-10-31", "tags": ["claude"], "cover": "" } -->
+//
 // Writes public/blogs/, public/blogs/<slug>/, public/blogs/rss.xml, public/_redirects,
 // public/404.html, and the three newest posts into public/index.html.
 
-import { readFile, writeFile, mkdir, rm } from 'node:fs/promises';
+import { readFile, writeFile, mkdir, rm, readdir } from 'node:fs/promises';
 import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
 const root = join(dirname(fileURLToPath(import.meta.url)), '..');
 const pub = join(root, 'public');
 const snapshot = join(root, 'content', 'hashnode-rss.xml');
+const localDir = join(root, 'content', 'posts');
 const SITE = 'https://techswitch.in';
 
 const arg = (name) => { const i = process.argv.indexOf(name); return i > -1 ? process.argv[i + 1] : undefined; };
@@ -53,6 +58,28 @@ function parse(xml) {
       html: clean(html),
     };
   }).filter((p) => p.slug).sort((a, b) => b.date - a.date);
+}
+
+async function localPosts() {
+  const files = (await readdir(localDir).catch(() => [])).filter((f) => f.endsWith('.html'));
+  return Promise.all(files.map(async (f) => {
+    const src = await readFile(join(localDir, f), 'utf8');
+    const m = src.match(/^\s*<!--([\s\S]*?)-->/);
+    if (!m) throw new Error(`content/posts/${f}: no front-matter comment`);
+    const meta = JSON.parse(m[1]);
+    const html = src.slice(m[0].length).trim();
+    const words = html.replace(/<[^>]+>/g, ' ').split(/\s+/).filter(Boolean).length;
+    return {
+      title: meta.title,
+      brief: meta.brief || '',
+      slug: f.replace(/\.html$/, ''),
+      date: new Date(meta.date),
+      tags: meta.tags || [],
+      cover: meta.cover || '',
+      minutes: Math.max(1, Math.round(words / 200)),
+      html: clean(html),
+    };
+  }));
 }
 
 // The posts are our own writing, but strip anything executable before it is served from our domain.
@@ -194,7 +221,10 @@ const chrome = {
   footer: between(home, '<!-- chrome:footer -->', '<!-- /chrome:footer -->'),
 };
 
-const posts = parse(await loadFeed());
+const feedPosts = parse(await loadFeed());
+const local = await localPosts();
+// a local post wins over a feed post with the same slug
+const posts = [...local, ...feedPosts.filter((p) => !local.some((l) => l.slug === p.slug))].sort((a, b) => b.date - a.date);
 if (!posts.length) throw new Error('the feed has no posts');
 
 await rm(join(pub, 'blogs'), { recursive: true, force: true });

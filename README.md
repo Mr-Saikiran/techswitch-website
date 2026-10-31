@@ -13,6 +13,7 @@ public/                 everything Cloudflare serves
   upihub/privacy/       UPI Hub privacy policy (the Play Store listing links here)
   _redirects, 404.html  generated: old Hashnode URLs → /blogs/<slug>/
 content/hashnode-rss.xml  snapshot of the Hashnode feed the blog is built from
+content/posts/            posts written here, merged with the feed
 scripts/build-blog.mjs    builds public/blogs from the feed
 scripts/serve.mjs         local preview that honours _redirects
 wrangler.jsonc            Cloudflare Worker (static assets only)
@@ -70,6 +71,10 @@ npm run deploy
 ```
 
 `refresh` updates the snapshot, rebuilds `/blogs`, the redirects and the three newest posts on the home page.
+
+### Posts written here instead of on Hashnode
+
+A post can also live in this repo as `content/posts/<slug>.html`: a JSON comment with the title, brief, date and tags, then the post's HTML body. See `content/posts/claude-ccar-f-certification-sample-questions.html`. `npm run build` merges these posts with the feed. A local post wins over a feed post with the same slug. The quiz cards (`.quiz`, with the answer in a `<details>`) are styled in `site.css`.
 
 ## Still to fill in
 
