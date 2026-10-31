@@ -260,3 +260,60 @@ button.ex-name { background: none; border: none; padding: 0; font: inherit; font
   :root:not([data-theme="light"]) .diet-egg { background: #3d2e0d; color: #f3c766; }
   :root:not([data-theme="light"]) .diet-nonveg { background: #44171a; color: #ff9e95; }
 }
+
+/* Recipes */
+.recipe h5 { margin: 6px 0 4px; font-size: 13px; }
+.ingredients { margin: 0 0 8px; padding-left: 18px; font-size: 13px; columns: 2; column-gap: 18px; }
+.ingredients li { break-inside: avoid; margin-bottom: 2px; }
+.goal-bulk { background: #fde9df; color: #b5400b; border-color: transparent; }
+.goal-lean { background: #dcf5e3; color: #146c37; border-color: transparent; }
+.yt-btn { display: inline-block; text-decoration: none; margin-top: 4px; }
+.diet-filters input[type="search"], .diet-filters input[type="number"], .diet-filters input[type="time"] { font: inherit; padding: 9px 10px; border: 1px solid var(--border); border-radius: 9px; background: var(--surface-2); color: var(--text); }
+label.inline { display: inline-flex; align-items: center; gap: 6px; font-weight: 600; font-size: 13px; }
+label.inline input[type="number"] { width: 72px; font: inherit; padding: 5px 8px; border: 1px solid var(--border); border-radius: 8px; background: var(--surface-2); color: var(--text); }
+
+/* Timers (nap, meditation) */
+.timer-box { text-align: center; padding: 14px; border-radius: var(--radius); background: var(--surface-2); margin: 10px 0 14px; }
+.timer-big { font-size: 44px; font-weight: 800; font-variant-numeric: tabular-nums; letter-spacing: -1px; }
+.timer-label, .timer-sub, .chant-count { color: var(--muted); font-size: 13px; margin: 2px 0 8px; }
+.timer-box.ringing { animation: ring 1s infinite; }
+@keyframes ring { 50% { background: var(--accent-soft); } }
+
+/* Sleep */
+.age-table { display: flex; flex-direction: column; gap: 6px; }
+.age-row { display: grid; grid-template-columns: 170px 1fr 70px; gap: 10px; align-items: center; font-size: 13px; padding: 4px 8px; border-radius: 8px; }
+.age-row small { color: var(--muted); }
+.age-row.current { background: var(--accent-soft); font-weight: 600; }
+.age-bar { position: relative; height: 10px; background: var(--surface-2); border-radius: 999px; }
+.age-bar i { position: absolute; top: 0; bottom: 0; background: #6d5bd0; border-radius: 999px; }
+.cycle-options { display: grid; gap: 8px; grid-template-columns: repeat(auto-fit, minmax(170px, 1fr)); margin: 6px 0 14px; }
+.cycle-opt { font: inherit; text-align: left; cursor: pointer; padding: 10px 12px; border-radius: 12px; border: 1px solid var(--border); background: var(--surface); color: var(--text); display: flex; flex-direction: column; gap: 4px; }
+.cycle-opt b { font-size: 22px; }
+.cycle-opt span { font-size: 12px; color: var(--muted); }
+.cycle-opt.good { border-color: #6d5bd0; }
+.cycle-opt.selected { box-shadow: 0 0 0 2px #6d5bd0; }
+.hypno { display: flex; height: 26px; border-radius: 8px; overflow: hidden; margin: 8px 0; }
+.st-light { background: #9fb3d9; }
+.st-deep { background: #2c3e8c; }
+.st-rem { background: #b05bd0; }
+.hypno-legend { display: flex; flex-wrap: wrap; gap: 14px; font-size: 12px; color: var(--muted); margin-bottom: 8px; }
+.hypno-legend i { display: inline-block; width: 10px; height: 10px; border-radius: 3px; margin-right: 4px; vertical-align: -1px; }
+.link-grid { display: grid; gap: 10px; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); }
+.link-card { display: flex; flex-direction: column; gap: 4px; text-decoration: none; color: var(--text); }
+.link-card:hover { border-color: var(--accent); }
+.link-card .small:last-child { color: var(--accent); }
+
+/* Meditation */
+.player .timer-box .btn { margin-top: 4px; min-width: 120px; }
+.breath-wrap { position: relative; height: 220px; display: grid; place-items: center; }
+.breath-circle { width: 200px; height: 200px; border-radius: 50%; background: radial-gradient(circle at 35% 35%, #c9b8ff, #6d5bd0); transform: scale(0.55); opacity: .85; }
+.breath-phase { position: absolute; font-weight: 700; color: #fff; text-shadow: 0 1px 3px rgba(0, 0, 0, .4); }
+
+@media (max-width: 560px) {
+  .age-row { grid-template-columns: 120px 1fr 56px; }
+  .ingredients { columns: 1; }
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) .goal-bulk { background: #3a2116; color: #ff9d6b; }
+  :root:not([data-theme="light"]) .goal-lean { background: #123d24; color: #7fe0a3; }
+}

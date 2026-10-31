@@ -67,9 +67,10 @@
 
   // ---------- tabs ----------
 
-  const TABS = ['planner', 'splits', 'exercises', 'diet', 'hiit', 'yoga', 'pilates', 'longevity', 'science'];
+  const TABS = ['planner', 'splits', 'exercises', 'diet', 'recipes', 'hiit', 'yoga', 'pilates', 'meditation', 'sleep', 'longevity', 'science'];
   const rendered = {};
-  const RENDER = { splits: renderSplits, exercises: renderExercises, diet: renderDiet, hiit: renderHiit, yoga: renderYoga, pilates: renderPilates, longevity: renderLongevity, science: renderScience };
+  const RENDER = { splits: renderSplits, exercises: renderExercises, diet: renderDiet, recipes: WS.renderRecipes,
+    meditation: WS.renderMeditation, sleep: WS.renderSleep, hiit: renderHiit, yoga: renderYoga, pilates: renderPilates, longevity: renderLongevity, science: renderScience };
 
   function showTab() {
     const id = TABS.includes(location.hash.slice(1)) ? location.hash.slice(1) : 'planner';
@@ -613,6 +614,9 @@
   }
 
   // ---------- boot ----------
+
+  // Shared helpers for the tabs in wellness-ui.js.
+  WS.ui = { $, esc, cite, state };
 
   $('#footer-channels').textContent = Object.values(WS.CHANNELS).map((c) => c.name).join(', ');
   // Inside the Android / iOS app (Capacitor injects window.Capacitor): hide web-only bits.
