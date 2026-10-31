@@ -7,7 +7,7 @@ import { fileURLToPath } from 'node:url';
 
 const pub = join(dirname(fileURLToPath(import.meta.url)), '..', 'public');
 const port = Number(process.argv[2] || 8788);
-const types = { '.html': 'text/html; charset=utf-8', '.css': 'text/css', '.js': 'text/javascript', '.png': 'image/png', '.xml': 'application/xml', '.svg': 'image/svg+xml' };
+const types = { '.html': 'text/html; charset=utf-8', '.css': 'text/css', '.js': 'text/javascript', '.png': 'image/png', '.xml': 'application/xml', '.svg': 'image/svg+xml', '.webp': 'image/webp' };
 const rules = (await readFile(join(pub, '_redirects'), 'utf8')).split('\n').filter((l) => l && !l.startsWith('#')).map((l) => l.split(/\s+/));
 
 async function file(path) {

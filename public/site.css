@@ -334,6 +334,10 @@ body { font-weight: var(--body-weight); }
 .screen { aspect-ratio: 923 / 2000; }
 .screens .screen[data-slot]:has(> img) { padding: 0; background: var(--color-paper); outline: 1px solid var(--color-rule); outline-offset: -1px; }
 .screens .screen[data-slot] > img { filter: none; mix-blend-mode: normal; opacity: 1; }
+/* a certification badge is a mark, not a photograph: shown whole and in its own colours, on a plate matched to its dark backdrop */
+[data-slot].cover--whole:has(> img), :root [data-slot].cover--whole:has(> img) { background: #090713; }
+[data-slot].cover--whole > img, :root [data-slot].cover--whole > img { object-fit: contain; filter: none; mix-blend-mode: normal; opacity: 1; }
+[data-slot].cover--whole:has(> img)::before { display: none; }
 .screens .screen[data-slot]:has(> img)::before { content: none; }
 @media (max-width: 40rem) { .seg button { padding: 0 var(--space-sm); } }
 

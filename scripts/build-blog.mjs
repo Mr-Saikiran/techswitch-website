@@ -5,7 +5,8 @@
 //   node scripts/build-blog.mjs --feed <url>          fetches a fresh feed and refreshes the snapshot
 //
 // A local post opens with a JSON comment, then its HTML body:
-//   <!-- { "title": "...", "brief": "...", "date": "2026-10-31", "tags": ["claude"], "cover": "" } -->
+//   <!-- { "title": "...", "brief": "...", "date": "2026-10-31", "tags": ["claude"], "cover": "/img/x.webp", "coverFit": "contain" } -->
+// "coverFit": "contain" shows the whole cover in its own colours, for a badge or logo that must not be cropped or tinted.
 //
 // Writes public/blogs/, public/blogs/<slug>/, public/blogs/rss.xml, public/_redirects,
 // public/404.html, and the three newest posts into public/index.html.
@@ -76,6 +77,7 @@ async function localPosts() {
       date: new Date(meta.date),
       tags: meta.tags || [],
       cover: meta.cover || '',
+      coverFit: meta.coverFit || '',
       minutes: Math.max(1, Math.round(words / 200)),
       html: clean(html),
     };
@@ -132,8 +134,10 @@ ${chrome.footer}
 `;
 }
 
+// Hashnode's CDN resizes on the fly; covers served from public/img are used as they are
+const coverSrc = (url) => /^https:\/\/cdn\.hashnode\.com\//.test(url) ? `${esc(url)}?w=1600&amp;auto=compress,format` : esc(url);
 const cover = (p, cls, priority) => p.cover
-  ? `<figure class="${cls}" data-slot="cover-${p.slug}" data-alt="Cover for ${esc(p.title)}"><img src="${esc(p.cover)}?w=1600&amp;auto=compress,format" alt="" width="1600" height="900"${priority ? ' fetchpriority="high"' : ' loading="lazy"'}></figure>`
+  ? `<figure class="${cls}${p.coverFit === 'contain' ? ' cover--whole' : ''}" data-slot="cover-${p.slug}" data-alt="Cover for ${esc(p.title)}"><img src="${coverSrc(p.cover)}" alt="" width="1600" height="900"${priority ? ' fetchpriority="high"' : ' loading="lazy"'}></figure>`
   : '';
 
 function indexPage(posts) {
@@ -167,7 +171,7 @@ function postPage(p) {
     title: `${p.title}: TechSwitch`,
     description: p.brief || p.title,
     canonical: `/blogs/${p.slug}/`,
-    image: p.cover,
+    image: p.cover.startsWith('/') ? SITE + p.cover : p.cover,
     body: `  <article class="container article">
     <header class="article__head">
       <a class="link" href="/blogs/">all posts</a>
