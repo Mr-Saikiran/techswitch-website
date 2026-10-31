@@ -108,7 +108,7 @@ Without them the workflow only builds and warns. Deploying by hand with
 `data-position="bottom-right"` (or `top-left`, `top-right`) moves it off an app's own controls.
 
 - `/oursociety/`: already added to every exported page, at `bottom-right`. Re-add it after a new export from the `oursociety` repo.
-- `/cvtuner` (Worker `cvtuner`, repo `Mr-Saikiran/cvtuner`) and `/equity` (Worker `techswitch-equity`, repo `Mr-Saikiran/agentic-zerodha`): not added yet. Each needs the line above in its own HTML layout.
+- `/cvtuner` (Worker `cvtuner`, repo `Mr-Saikiran/cvtuner`, `deploy/cloudflare/worker.js`) and `/equity` (Worker `techswitch-equity`, repo `Mr-Saikiran/agentic-zerodha`, `deploy/cloudflare-worker.js`): their proxy Workers add the line to every HTML page with `HTMLRewriter`, so neither app needs a rebuild.
 - `/upihub/` and the blog use the home page's nav, where the mark beside the wordmark is the home link.
 
 ## Work banners
