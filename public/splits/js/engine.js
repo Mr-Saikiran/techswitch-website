@@ -60,6 +60,7 @@
           if (e.senior) s += 4;
         }
         if (p.bodyType === 'higher' && e.impact) s -= 1.5;
+        if (p.equipment === 'gym' && e.eq === 'band') s -= 1.5; // bands stand in for home training
         if (strengthy && e.main) s += 2;
         if (mode === '5x5' && e.eq === 'barbell') s += 3;
         if (p.goal === 'athletic' && e.main) s += 0.5;
@@ -79,8 +80,8 @@
     nil: { label: 'Nil', every: Infinity, pool: 1, spread: 0 },
     low: { label: 'Low', every: 8, pool: 2, spread: 1.05 },
     medium: { label: 'Medium', every: 4, pool: 3, spread: 1.5 },
-    high: { label: 'High', every: 2, pool: 4, spread: 2.5 },
-    extreme: { label: 'Extreme', every: 1, pool: 99, spread: 4 },
+    high: { label: 'High', every: 2, pool: 4, spread: 1.5 },
+    extreme: { label: 'Extreme', every: 1, pool: 99, spread: 2.05 },
   };
 
   // Small seeded PRNG (mulberry32) so a week's plan is reproducible.

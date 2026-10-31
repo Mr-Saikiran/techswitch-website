@@ -11,6 +11,7 @@ public/                 everything Cloudflare serves
   blogs/                generated: index, one folder per post, rss.xml
   upihub/               UPI Hub demo and download page (/upihub/)
   upihub/privacy/       UPI Hub privacy policy (the Play Store listing links here)
+  splits/               Workout Splits planner (/splits/), copied by scripts/sync-splits.mjs
   _redirects, 404.html  generated: old Hashnode URLs → /blogs/<slug>/
 content/hashnode-rss.xml  snapshot of the Hashnode feed the blog is built from
 content/posts/            posts written here, merged with the feed
@@ -113,6 +114,7 @@ Without them the workflow only builds and warns. Deploying by hand with
 `data-position="bottom-right"` (or `top-left`, `top-right`) moves it off an app's own controls.
 
 - `/oursociety/`: already added to every exported page, at `bottom-right`. Re-add it after a new export from the `oursociety` repo.
+- `/splits/`: `npm run sync:splits` copies the static app from a `workout-splits` checkout (default `../workout-splits`, repo `Mr-Saikiran/workout-splits`) and adds the line. Run it after each change there, then commit `public/splits`.
 - `/cvtuner` (Worker `cvtuner`, repo `Mr-Saikiran/cvtuner`, `deploy/cloudflare/worker.js`) and `/equity` (Worker `techswitch-equity`, repo `Mr-Saikiran/agentic-zerodha`, `deploy/cloudflare-worker.js`): their proxy Workers add the line to every HTML page with `HTMLRewriter`, so neither app needs a rebuild.
 - `/upihub/` and the blog use the home page's nav, where the mark beside the wordmark is the home link.
 
