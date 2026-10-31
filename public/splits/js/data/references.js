@@ -147,10 +147,7 @@
 // channel, so they never point at a deleted or renamed video.
 (function (WS) {
   WS.CHANNELS = {
-    jeremy: { name: 'Jeremy Ethier', handle: '@JeremyEthier', blurb: 'Kinesiologist; breaks down the research behind each exercise.' },
-    athlean: { name: 'ATHLEAN-X', handle: '@athleanx', blurb: 'Jeff Cavaliere, physical therapist; form, anatomy and injury prevention.' },
     adriene: { name: 'Yoga With Adriene', handle: '@yogawithadriene', blurb: 'Free, beginner-friendly yoga for every body and every need.' },
-    thenx: { name: 'THENX', handle: '@THENX', blurb: 'Chris Heria; calisthenics skills, bodyweight strength and HIIT.' },
     blogilates: { name: 'Blogilates', handle: '@blogilates', blurb: 'Cassey Ho, certified Pilates instructor; free mat Pilates workouts.' },
   };
   WS.yt = (channel, query) =>

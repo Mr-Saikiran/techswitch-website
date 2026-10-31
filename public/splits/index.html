@@ -108,6 +108,8 @@
                 <option value="8">8 weeks</option>
                 <option value="12" selected>12 weeks</option>
                 <option value="16">16 weeks</option>
+                <option value="20">20 weeks</option>
+                <option value="24">24 weeks</option>
               </select>
             </label>
           </div>
@@ -140,15 +142,21 @@
     <section id="tab-science" class="tab-panel" hidden></section>
   </main>
 
+  <dialog id="ex-modal" aria-label="Exercise demo">
+    <button class="btn small modal-close" id="ex-modal-close" aria-label="Close">✕</button>
+    <div id="ex-modal-body"></div>
+  </dialog>
+
   <footer class="site-footer">
     <div class="wrap">
       <p><strong>Not medical advice.</strong> Check with a doctor before starting if you have a heart, joint or other medical condition, are pregnant, or are new to exercise after 40.</p>
-      <p>Open source under the MIT license · Videos by <span id="footer-channels"></span> · Longevity framework credit: Bryan Johnson · <a href="https://github.com/Mr-Saikiran/workout-splits">Contribute on GitHub</a></p>
+      <p>Open source under the MIT license · Exercise demos: <a href="https://github.com/yuhonas/free-exercise-db">free-exercise-db</a> (public domain) · Yoga &amp; Pilates videos: <span id="footer-channels"></span> · Longevity framework credit: Bryan Johnson · <a href="https://github.com/Mr-Saikiran/workout-splits">Contribute on GitHub</a></p>
     </div>
   </footer>
 
   <script src="js/data/references.js"></script>
   <script src="js/data/exercises.js"></script>
+  <script src="js/data/demos.js"></script>
   <script src="js/data/splits.js"></script>
   <script src="js/data/yoga.js"></script>
   <script src="js/data/movement.js"></script>

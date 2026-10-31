@@ -195,3 +195,31 @@ main { padding: 24px 0 48px; }
   body { background: #fff; color: #000; }
   .card { box-shadow: none; break-inside: avoid; }
 }
+
+/* Exercise demos: start and end photos, alternating */
+.demo { position: relative; background: #fff; border-radius: 10px; overflow: hidden; }
+.demo img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: contain; }
+.demo img + img { animation: demo-flip 1.6s infinite; }
+@keyframes demo-flip { 0%, 49.9% { opacity: 0; } 50%, 100% { opacity: 1; } }
+.demo--thumb { aspect-ratio: 3 / 2; margin-bottom: 10px; }
+.demo--full { aspect-ratio: 3 / 2; max-height: 360px; margin: 12px auto; }
+@media (prefers-reduced-motion: reduce) {
+  .demo { display: grid; grid-template-columns: 1fr 1fr; gap: 4px; }
+  .demo img { position: static; height: auto; aspect-ratio: 3 / 2; }
+  .demo img + img { animation: none; }
+}
+.ex-card { cursor: pointer; }
+.ex-card:hover, .ex-card:focus-visible { border-color: var(--accent); outline: none; }
+.link-like { color: var(--accent); font-weight: 600; }
+button.ex-name { background: none; border: none; padding: 0; font: inherit; font-weight: 600; color: inherit; text-align: left; }
+.demo-tag { color: var(--accent); font-size: 11px; }
+.vid.search::before { content: "🔍 "; }
+.steps a { background: var(--surface-2); padding: 3px 8px; border-radius: 8px; color: var(--text); text-decoration: none; }
+.steps a:hover { color: var(--accent); }
+.steps a:not(:last-child)::after { content: " →"; color: var(--muted); }
+
+#ex-modal { width: min(560px, calc(100vw - 32px)); max-height: calc(100vh - 32px); border: 1px solid var(--border); border-radius: var(--radius); background: var(--surface); color: var(--text); padding: 20px; }
+#ex-modal::backdrop { background: rgba(0, 0, 0, .55); }
+#ex-modal h2 { margin: 0; font-size: 20px; }
+#ex-modal p { font-size: 14px; }
+.modal-close { position: absolute; top: 12px; right: 12px; }

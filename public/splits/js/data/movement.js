@@ -1,4 +1,4 @@
-// HIIT protocols, calisthenics skill progressions (THENX), Pilates (Blogilates)
+// HIIT protocols, calisthenics skill progressions, Pilates (Blogilates)
 // and the longevity framework (credit: Bryan Johnson).
 (function (WS) {
   WS.HIIT = [
@@ -7,47 +7,47 @@
       protocol: '10 min warm-up → 4 × (4 min at 85–95% max HR, 3 min easy) → 5 min cool-down',
       modes: 'Run uphill, bike, rower, ski-erg',
       why: 'Improved VO2max more than steady moderate training at the same total work. VO2max is one of the strongest predictors of lifespan.',
-      refs: ['helgerud2007', 'mandsager2018'], query: 'HIIT cardio', tags: { general: 3, athletic: 3, fatloss: 3, recomp: 2 },
+      refs: ['helgerud2007', 'mandsager2018'], tags: { general: 3, athletic: 3, fatloss: 3, recomp: 2 },
     },
     {
       id: 'tabata', name: 'Tabata (20/10)', minutes: 4, level: 'Advanced',
       protocol: '8 × (20 s all-out, 10 s rest). In the original study this meant about 170% of VO2max on a bike.',
       modes: 'Bike sprints (original study), burpees, jump squats',
       why: 'Brief, extremely hard intervals improved both aerobic and anaerobic capacity. True Tabata is far harder than most "Tabata classes".',
-      refs: ['tabata1996'], query: 'tabata', tags: { athletic: 3, fatloss: 2 },
+      refs: ['tabata1996'], tags: { athletic: 3, fatloss: 2 },
     },
     {
       id: 'beginner-30-30', name: 'Beginner 30/30 Intervals', minutes: 20, level: 'Beginner',
       protocol: '5 min warm-up → 10 × (30 s brisk, 30 s easy) → 5 min cool-down',
       modes: 'Brisk walk / jog, bike, elliptical, marching in place',
       why: 'A gentle introduction to intervals; builds fitness before harder protocols. Counts toward WHO vigorous-activity minutes.',
-      refs: ['who2020'], query: 'beginner HIIT', tags: { general: 3, fatloss: 3, higher: 3, senior: 1 },
+      refs: ['who2020'], tags: { general: 3, fatloss: 3, higher: 3, senior: 1 },
     },
     {
       id: 'calisthenics-hiit', name: 'Bodyweight HIIT Circuit', minutes: 20, level: 'Intermediate',
       protocol: '4 rounds of 40 s work / 20 s rest: jump squats, push-ups, mountain climbers, burpees, plank jacks',
       modes: 'No equipment; anywhere',
       why: 'Strength-endurance and conditioning with zero equipment, ideal for home and travel days.',
-      refs: ['who2020'], query: 'HIIT workout', tags: { fatloss: 3, general: 2, athletic: 2 },
+      refs: ['who2020'], tags: { fatloss: 3, general: 2, athletic: 2 },
     },
     {
       id: 'emom', name: 'Calisthenics EMOM', minutes: 15, level: 'Intermediate',
       protocol: 'Every minute on the minute for 15 min, rotating: 5 pull-ups, 10 push-ups, 15 squats',
       modes: 'Pull-up bar',
-      why: 'Builds pulling and pushing volume with built-in rest. A THENX staple for getting reps in.',
-      refs: [], query: 'EMOM', tags: { muscle: 2, athletic: 2, recomp: 2 },
+      why: 'Builds pulling and pushing volume with built-in rest; a calisthenics staple for getting reps in.',
+      refs: [], tags: { muscle: 2, athletic: 2, recomp: 2 },
     },
   ];
 
   // Calisthenics progressions: master each step (3 × target reps) before moving on.
   WS.CALISTHENICS = [
-    { skill: 'Push-up → One-arm push-up', steps: ['Incline push-up', 'Push-up', 'Diamond push-up', 'Archer push-up', 'One-arm push-up'], target: '3 × 12 (3 × 5 for archer and one-arm)', query: 'one arm push up' },
-    { skill: 'Pull-up → Muscle-up', steps: ['Dead hang 30 s', 'Negative pull-up', 'Pull-up', 'Chest-to-bar pull-up', 'Muscle-up'], target: '3 × 8 (3 × 3 for muscle-ups)', query: 'muscle up' },
-    { skill: 'Squat → Pistol squat', steps: ['Bodyweight squat', 'Split squat', 'Bulgarian split squat', 'Assisted pistol', 'Pistol squat'], target: '3 × 10 per leg', query: 'pistol squat' },
-    { skill: 'Dip → Straight bar dip', steps: ['Bench dip', 'Negative dip', 'Parallel bar dip', 'Weighted dip', 'Straight bar dip'], target: '3 × 10', query: 'dips' },
-    { skill: 'Plank → L-sit', steps: ['Plank 60 s', 'Hollow hold 30 s', 'Tuck L-sit', 'One-leg L-sit', 'L-sit 15 s'], target: 'Hold time per step', query: 'l sit' },
-    { skill: 'Pike push-up → Handstand push-up', steps: ['Pike push-up', 'Elevated pike push-up', 'Wall handstand hold 30 s', 'Negative wall HSPU', 'Wall handstand push-up'], target: '3 × 8 (hold steps 3 × 30 s)', query: 'handstand push up' },
-    { skill: 'Tuck → Front lever', steps: ['Hanging knee raise', 'Tuck front lever 10 s', 'Advanced tuck', 'One-leg front lever', 'Front lever'], target: '3 × 10 s holds', query: 'front lever' },
+    { skill: 'Push-up → One-arm push-up', steps: ['Incline push-up', 'Push-up', 'Diamond push-up', 'Archer push-up', 'One-arm push-up'], target: '3 × 12 (3 × 5 for archer and one-arm)' },
+    { skill: 'Pull-up → Muscle-up', steps: ['Dead hang 30 s', 'Negative pull-up', 'Pull-up', 'Chest-to-bar pull-up', 'Muscle-up'], target: '3 × 8 (3 × 3 for muscle-ups)' },
+    { skill: 'Squat → Pistol squat', steps: ['Bodyweight squat', 'Split squat', 'Bulgarian split squat', 'Assisted pistol', 'Pistol squat'], target: '3 × 10 per leg' },
+    { skill: 'Dip → Straight bar dip', steps: ['Bench dip', 'Negative dip', 'Parallel bar dip', 'Weighted dip', 'Straight bar dip'], target: '3 × 10' },
+    { skill: 'Plank → L-sit', steps: ['Plank 60 s', 'Hollow hold 30 s', 'Tuck L-sit', 'One-leg L-sit', 'L-sit 15 s'], target: 'Hold time per step' },
+    { skill: 'Pike push-up → Handstand push-up', steps: ['Pike push-up', 'Elevated pike push-up', 'Wall handstand hold 30 s', 'Negative wall HSPU', 'Wall handstand push-up'], target: '3 × 8 (hold steps 3 × 30 s)' },
+    { skill: 'Tuck → Front lever', steps: ['Hanging knee raise', 'Tuck front lever 10 s', 'Advanced tuck', 'One-leg front lever', 'Front lever'], target: '3 × 10 s holds' },
   ];
 
   WS.PILATES_ROUTINES = [

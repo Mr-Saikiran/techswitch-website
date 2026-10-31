@@ -209,7 +209,8 @@
     const used = {};
     const warnings = [];
     const block = blockOf(p);
-    const rand = rng(((p.seed || 1) * 7919 + block * 104729) >>> 0);
+    // Each repeat of the program (cycle) gets its own mix.
+    const rand = rng(((p.seed || 1) * 7919 + block * 104729 + ((p.cycle || 1) - 1) * 15485863) >>> 0);
 
     days.forEach((d) => {
       const dayUsed = new Set();

@@ -22,22 +22,47 @@
   const vid = (channel, query) =>
     `<a class="vid" href="${WS.yt(channel, query)}" target="_blank" rel="noopener">${esc(WS.CHANNELS[channel].name)}</a>`;
 
-  function exerciseVideos(ex) {
-    const q = ex.yt || ex.name;
-    const out = [vid('jeremy', q), vid('athlean', q)];
-    if (ex.eq === 'bodyweight' || ['power', 'conditioning'].includes(ex.pattern)) out.push(vid('thenx', q));
-    return '<div class="vids">' + out.join('') + '</div>';
+  // Google Images / Videos searches, for exercises and workouts alike.
+  const searchLinks = (name) => `<div class="vids">
+    <a class="vid search" href="${WS.googleImages(name)}" target="_blank" rel="noopener">Images</a>
+    <a class="vid" href="${WS.googleVideos(name)}" target="_blank" rel="noopener">Videos</a></div>`;
+
+  const skillDots = (n) => '●'.repeat(n) + '○'.repeat(3 - n);
+
+  // Two-frame demo: start and end position, alternating.
+  function demoHtml(ex, size) {
+    const d = WS.demoFor(ex.id);
+    if (!d) return size === 'thumb' ? '' : '<p class="small muted">No demo image yet. Use the image and video searches below.</p>';
+    // Lazy images inside a <dialog> may never load, so the full demo loads eagerly.
+    const lazy = size === 'thumb' ? ' loading="lazy"' : '';
+    return `<div class="demo demo--${size}" role="img" aria-label="${esc(ex.name)}: start and end position">
+      <img src="${d[0]}" alt=""${lazy} decoding="async"><img src="${d[1]}" alt=""${lazy} decoding="async"></div>`;
   }
 
   function exerciseCard(ex) {
     const pat = WS.PATTERNS[ex.pattern];
-    return `<article class="card">
+    return `<article class="card ex-card" data-ex="${ex.id}" tabindex="0" role="button" aria-label="Show how to do ${esc(ex.name)}">
+      ${demoHtml(ex, 'thumb')}
       <div class="ex-head"><span class="tier ${ex.tier}" title="Evidence tier">${ex.tier}</span>
-        <div class="ex-name" style="cursor:default">${esc(ex.name)}<small>${esc(pat.label)} · ${EQ_LABEL[ex.eq]} · skill ${'●'.repeat(ex.skill)}${'○'.repeat(3 - ex.skill)}</small></div></div>
-      <p class="small">${esc(ex.why)} ${cite(ex.refs)}</p>
-      <p class="small muted"><b>Cues:</b> ${esc(ex.cues)}</p>
-      ${exerciseVideos(ex)}
+        <div class="ex-name">${esc(ex.name)}<small>${esc(pat.label)} · ${EQ_LABEL[ex.eq]} · skill ${skillDots(ex.skill)}</small></div></div>
+      <p class="small">${esc(ex.why)}</p>
+      <span class="small link-like">${WS.demoFor(ex.id) ? '▶ See how it\'s done' : 'How to do it'}</span>
     </article>`;
+  }
+
+  function openExercise(id) {
+    const ex = WS.EX_BY_ID[id];
+    const pat = WS.PATTERNS[ex.pattern];
+    const dlg = $('#ex-modal');
+    $('#ex-modal-body').innerHTML = `
+      <div class="ex-head"><span class="tier ${ex.tier}">${ex.tier}</span>
+        <div class="ex-name"><h2>${esc(ex.name)}</h2><small>${esc(pat.label)} · ${EQ_LABEL[ex.eq]} · skill ${skillDots(ex.skill)}</small></div></div>
+      ${demoHtml(ex, 'full')}
+      <p>${esc(ex.why)} ${cite(ex.refs)}</p>
+      <p class="muted"><b>Cues:</b> ${esc(ex.cues)}</p>
+      ${searchLinks(ex.name)}
+      ${WS.demoFor(ex.id) ? '<p class="cite">Demo images: free-exercise-db (public domain).</p>' : ''}`;
+    if (dlg.showModal) dlg.showModal(); else dlg.setAttribute('open', '');
   }
 
   // ---------- tabs ----------
@@ -56,7 +81,7 @@
 
   // ---------- planner ----------
 
-  const state = { profile: null, rec: null, splitId: null, plan: null, week: 1, seed: newSeed() };
+  const state = { profile: null, rec: null, splitId: null, plan: null, week: 1, cycle: 1, seed: newSeed() };
   const STORE = 'workout-splits:profile';
 
   function readProfile() {
@@ -89,6 +114,7 @@
     const p = readProfile();
     state.week = Math.min(state.week, p.weeks);
     p.week = state.week;
+    p.cycle = state.cycle;
     p.seed = state.seed;
     try { localStorage.setItem(STORE, JSON.stringify(p)); } catch (e) { /* ignore */ }
     state.profile = p;
@@ -105,11 +131,13 @@
     const desc = v.every === Infinity ? 'Same exercises for the whole program.'
       : v.every === 1 ? 'A fresh mix of exercises every week.'
       : `Exercises rotate every ${v.every} weeks: block ${plan.block + 1} of ${blocks}.`;
+    const last = p.week >= p.weeks;
     return `<div class="variety no-print">
-      <button class="btn small" data-week="${p.week - 1}" ${p.week <= 1 ? 'disabled' : ''} aria-label="Previous week">‹</button>
+      <button class="btn small" data-nav="-1" ${p.week <= 1 && p.cycle <= 1 ? 'disabled' : ''} aria-label="Previous week">‹</button>
+      ${p.cycle > 1 ? `<span class="chip accent">Cycle ${p.cycle}</span>` : ''}
       <select id="week-select" aria-label="Program week">${Array.from({ length: p.weeks }, (_, i) =>
         `<option value="${i + 1}"${i + 1 === p.week ? ' selected' : ''}>Week ${i + 1} of ${p.weeks}</option>`).join('')}</select>
-      <button class="btn small" data-week="${p.week + 1}" ${p.week >= p.weeks ? 'disabled' : ''} aria-label="Next week">›</button>
+      <button class="btn small" data-nav="1" aria-label="${last ? 'Repeat the program' : 'Next week'}" title="${last ? 'Start the program again with a fresh mix' : 'Next week'}">${last ? '↻ Repeat' : '›'}</button>
       <span class="chip accent">Variety: ${v.label}</span>
       ${p.variety !== 'nil' ? '<button class="btn small" id="reshuffle" title="New random exercise mix">🎲 Reshuffle</button>' : ''}
       <span class="small muted">${desc}</span>
@@ -197,16 +225,11 @@
         <div class="ex-row">
           <div class="ex-head">
             <span class="tier ${it.ex.tier}">${it.ex.tier}</span>
-            <div class="ex-name" data-toggle="${di}-${ii}">${esc(it.ex.name)}${it.focus ? '<span class="focus-tag">focus</span>' : ''}
-              <small>${esc(WS.PATTERNS[it.slot].label)}</small></div>
+            <button class="ex-name" data-ex="${it.ex.id}" title="See how it's done">${esc(it.ex.name)}${it.focus ? '<span class="focus-tag">focus</span>' : ''}${WS.demoFor(it.ex.id) ? ' <span class="demo-tag">▶</span>' : ''}
+              <small>${esc(WS.PATTERNS[it.slot].label)}</small></button>
             ${it.alts.length > 1 ? `<button class="swap no-print" data-swap="${di}-${ii}" title="Swap for another evidence-ranked option">↻ swap</button>` : ''}
           </div>
           <div class="ex-presc"><b>${it.sets} × ${esc(it.reps)}</b> · effort: ${esc(it.rir)}${/^\d/.test(it.rir) ? ' reps in reserve' : ''} · rest ${esc(it.rest)}</div>
-          <div class="ex-detail" id="detail-${di}-${ii}" hidden>
-            <p>${esc(it.ex.why)} ${cite(it.ex.refs)}</p>
-            <p class="muted"><b>Cues:</b> ${esc(it.ex.cues)}</p>
-            ${exerciseVideos(it.ex)}
-          </div>
         </div>`).join('')}
     </div>`;
   }
@@ -221,14 +244,14 @@
     const z2 = { fatloss: '150–300', general: '150', recomp: '120–150', muscle: '60–90', strength: '60–90', athletic: '90–120' }[p.goal];
     const card = (title, r, channel, extra) => `<div class="card note"><h4>${title}: ${esc(r.name)}</h4>
       <p class="small">${r.minutes} min · ${esc(r.when || r.level)}</p><p>${esc(r.purpose || r.protocol)}</p>
-      <div class="vids">${vid(channel, r.query)}</div>${extra || ''}</div>`;
+      ${channel ? `<div class="vids">${vid(channel, r.query)}</div>` : searchLinks(r.name)}${extra || ''}</div>`;
     return `<div>
       <div class="section-title"><h2>Cardio, mobility &amp; recovery</h2><span class="muted small">${restDays} non-lifting day${restDays === 1 ? '' : 's'} a week</span></div>
       <div class="notes">
         <div class="card note"><h4>Zone 2 cardio: ${z2} min / week</h4>
           <p>Easy, conversational pace: walking, cycling, rowing. A 10-minute walk after meals counts. Keep hard cardio away from leg days if you are chasing leg growth.</p>
           ${cite(['who2020', 'wilson2012', 'buffey2022'])}</div>
-        ${hiit.map((h) => card('Intervals', h, 'thenx', cite(h.refs))).join('')}
+        ${hiit.map((h) => card('Intervals', h, null, cite(h.refs))).join('')}
         ${yoga.map((y) => card('Yoga', y, 'adriene', cite(y.refs))).join('')}
         ${pilates.slice(0, 1).map((r) => card('Pilates', r, 'blogilates', cite(r.refs))).join('')}
       </div>
@@ -276,7 +299,7 @@
 
   function planText() {
     const { plan, profile: p } = state;
-    const lines = [`${plan.split.name}: ${p.days} days/week (${GOALS[p.goal]}, ${p.level}), week ${p.week} of ${p.weeks}`, ''];
+    const lines = [`${plan.split.name}: ${p.days} days/week (${GOALS[p.goal]}, ${p.level}), week ${p.week} of ${p.weeks}${p.cycle > 1 ? `, cycle ${p.cycle}` : ''}`, ''];
     plan.days.forEach((d) => {
       lines.push(`== ${d.name} (~${d.minutes} min) ==`);
       d.items.forEach((it) => lines.push(`- ${it.ex.name}: ${it.sets} x ${it.reps}, RIR ${it.rir}, rest ${it.rest}`));
@@ -287,25 +310,30 @@
   }
 
   function onResultsClick(e) {
-    const t = e.target.closest('[data-split],[data-swap],[data-toggle],[data-week],#copy-plan,#reshuffle');
+    const t = e.target.closest('[data-split],[data-swap],[data-ex],[data-nav],#copy-plan,#reshuffle');
     if (!t) return;
+    if (t.dataset.ex) { openExercise(t.dataset.ex); return; }
     if (t.dataset.split) { run(t.dataset.split); return; }
-    if (t.dataset.week) { state.week = Number(t.dataset.week); run(state.splitId); return; }
+    if (t.dataset.nav) {
+      // Past the last week the program repeats as a new cycle.
+      const weeks = state.profile.weeks;
+      state.week += Number(t.dataset.nav);
+      if (state.week > weeks) { state.week = 1; state.cycle++; }
+      if (state.week < 1) { state.week = state.cycle > 1 ? weeks : 1; state.cycle = Math.max(1, state.cycle - 1); }
+      run(state.splitId);
+      return;
+    }
     if (t.id === 'reshuffle') { state.seed = newSeed(); run(state.splitId); return; }
     if (t.id === 'copy-plan') {
       const done = () => { t.textContent = 'Copied ✓'; setTimeout(() => (t.textContent = 'Copy as text'), 1500); };
       if (navigator.clipboard) navigator.clipboard.writeText(planText()).then(done, () => {});
       return;
     }
-    if (t.dataset.toggle) { const d = $('#detail-' + t.dataset.toggle); d.hidden = !d.hidden; return; }
     if (t.dataset.swap) {
       const [di, ii] = t.dataset.swap.split('-').map(Number);
       const it = state.plan.days[di].items[ii];
       it.ex = it.alts[(it.alts.indexOf(it.ex) + 1) % it.alts.length];
-      const open = !$('#detail-' + di + '-' + ii).hidden;
-      const card = t.closest('.day');
-      card.outerHTML = dayHtml(state.plan.days[di], di);
-      if (open) $('#detail-' + di + '-' + ii).hidden = false;
+      t.closest('.day').outerHTML = dayHtml(state.plan.days[di], di);
     }
   }
 
@@ -381,6 +409,12 @@
       $('#ex-grid').innerHTML = list.map(exerciseCard).join('') || '<p class="muted">No exercises match.</p>';
     };
     draw();
+    const grid = $('#ex-grid');
+    grid.addEventListener('click', (e) => { const c = e.target.closest('[data-ex]'); if (c) openExercise(c.dataset.ex); });
+    grid.addEventListener('keydown', (e) => {
+      const c = e.target.closest('[data-ex]');
+      if (c && (e.key === 'Enter' || e.key === ' ')) { e.preventDefault(); openExercise(c.dataset.ex); }
+    });
     $('#area-pills').addEventListener('click', (e) => {
       const b = e.target.closest('[data-area]');
       if (!b) return;
@@ -400,18 +434,17 @@
   function renderHiit() {
     $('#tab-hiit').innerHTML = `
       <div class="hero"><h1>HIIT &amp; Calisthenics</h1>
-        <p>Interval protocols that raise VO2max, and bodyweight skill progressions you can train anywhere. Video demos from THENX.</p></div>
-      <div class="channel-row">${channelCard('thenx')}</div>
+        <p>Interval protocols that raise VO2max, and bodyweight skill progressions you can train anywhere. Each one links to image and video searches.</p></div>
       <h2>Interval protocols</h2>
       <div class="grid">${WS.HIIT.map((h) => `<article class="card">
         <h3>${esc(h.name)}</h3><div class="chips"><span class="chip accent">${h.minutes} min</span><span class="chip">${h.level}</span></div>
         <p><b>Protocol:</b> ${esc(h.protocol)}</p><p class="small"><b>Modes:</b> ${esc(h.modes)}</p>
-        <p class="small">${esc(h.why)} ${cite(h.refs)}</p><div class="vids">${vid('thenx', h.query)}</div></article>`).join('')}</div>
+        <p class="small">${esc(h.why)} ${cite(h.refs)}</p>${searchLinks(h.name + ' workout')}</article>`).join('')}</div>
       <h2 style="margin-top:28px">Calisthenics skill progressions</h2>
-      <p class="muted">Move to the next step when you hit the target for 3 sets with clean form.</p>
+      <p class="muted">Move to the next step when you hit the target for 3 sets with clean form. Tap a step to see videos of it.</p>
       <div class="grid">${WS.CALISTHENICS.map((c) => `<article class="card">
-        <h3>${esc(c.skill)}</h3><div class="steps">${c.steps.map((s) => `<span>${esc(s)}</span>`).join('')}</div>
-        <p class="small muted">Target: ${esc(c.target)}</p><div class="vids">${vid('thenx', c.query)}</div></article>`).join('')}</div>`;
+        <h3>${esc(c.skill)}</h3><div class="steps">${c.steps.map((s) => `<a href="${WS.googleVideos(s)}" target="_blank" rel="noopener">${esc(s)}</a>`).join('')}</div>
+        <p class="small muted">Target: ${esc(c.target)}</p>${searchLinks(c.steps[c.steps.length - 1])}</article>`).join('')}</div>`;
   }
 
   function routineCard(r, channel) {
@@ -487,7 +520,7 @@
       <div class="principles">${principles.map(([t, d, r]) => `<div class="card"><h4>${esc(t)}</h4><p class="small">${esc(d)}</p>${cite(r)}</div>`).join('')}</div>
       <div class="card" style="margin-bottom:24px"><h3>A note on body types</h3>
         <p class="small">"Ectomorph / mesomorph / endomorph" comes from 1940s somatotyping and does not predict how you respond to training. We ask about body type only as a shorthand for your current body composition, which changes calorie, cardio and exercise advice, not to put you in a box.</p></div>
-      <div class="channel-row">${['jeremy', 'athlean', 'thenx', 'adriene', 'blogilates'].map(channelCard).join('')}</div>
+      <div class="channel-row">${Object.keys(WS.CHANNELS).map(channelCard).join('')}</div>
       <h2>References</h2>
       <ol class="refs-list">${all.map((r) => `<li>${esc(r.citation)} <a href="${r.url}" target="_blank" rel="noopener">link</a></li>`).join('')}</ol>`;
   }
@@ -498,6 +531,9 @@
   loadProfile();
   $('#profile-form').addEventListener('submit', (e) => { e.preventDefault(); run(); $('#results').scrollIntoView({ behavior: 'smooth', block: 'start' }); });
   $('#results').addEventListener('click', onResultsClick);
+  const modal = $('#ex-modal');
+  $('#ex-modal-close').addEventListener('click', () => modal.close());
+  modal.addEventListener('click', (e) => { if (e.target === modal) modal.close(); });
   $('#results').addEventListener('change', (e) => {
     if (e.target.id === 'week-select') { state.week = Number(e.target.value); run(state.splitId); }
   });
