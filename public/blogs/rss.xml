@@ -1,5 +1,11 @@
-<?xml version="1.0" encoding="UTF-8"?><rss version="2.0" xmlns:content="http://purl.org/rss/1.0/modules/content/" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>TechSwitch blog</title><link>https://techswitch.in/blogs/</link><description>Notes on DevSecOps, cloud and Python from TechSwitch.</description><language>en</language><atom:link href="https://techswitch.in/blogs/rss.xml" rel="self" type="application/rss+xml"/><item><title><![CDATA[Claude CCAR-F Certification: Sample Questions with Answers]]></title><link>https://techswitch.in/blogs/claude-ccar-f-certification-sample-questions/</link><guid isPermaLink="true">https://techswitch.in/blogs/claude-ccar-f-certification-sample-questions/</guid><description><![CDATA[16 sample questions on multi-agent systems, Claude Code in CI and structured extraction. These may hit your CCAR-F exam: I cleared it on my second attempt.]]></description><pubDate>Sat, 31 Oct 2026 00:00:00 GMT</pubDate><category><![CDATA[Claude]]></category><category><![CDATA[Anthropic]]></category><category><![CDATA[Certification]]></category><category><![CDATA[AI Agents]]></category><content:encoded><![CDATA[<p>I cleared the Claude CCAR-F certification on my second attempt. These are sample questions I practised with, and questions like these may hit your exam. Each one has the answer and a short reason. Try each question first, then open the answer.</p>
-<p>The questions are grouped in three areas: a multi-agent research system, Claude Code in a CI/CD pipeline, and structured data extraction with tool use.</p>
+<?xml version="1.0" encoding="UTF-8"?><rss version="2.0" xmlns:content="http://purl.org/rss/1.0/modules/content/" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>TechSwitch blog</title><link>https://techswitch.in/blogs/</link><description>Notes on DevSecOps, cloud and Python from TechSwitch.</description><language>en</language><atom:link href="https://techswitch.in/blogs/rss.xml" rel="self" type="application/rss+xml"/><item><title><![CDATA[Claude CCAR-F Certification: Sample Questions, Cheat Sheet and Anti-Patterns]]></title><link>https://techswitch.in/blogs/claude-ccar-f-certification-sample-questions/</link><guid isPermaLink="true">https://techswitch.in/blogs/claude-ccar-f-certification-sample-questions/</guid><description><![CDATA[16 sample questions with answers, a one-page cheat sheet and the anti-patterns behind most wrong options. These may hit your CCAR-F exam: I cleared it on my second attempt.]]></description><pubDate>Sat, 31 Oct 2026 00:00:00 GMT</pubDate><category><![CDATA[Claude]]></category><category><![CDATA[Anthropic]]></category><category><![CDATA[Certification]]></category><category><![CDATA[AI Agents]]></category><content:encoded><![CDATA[<p>I cleared the Claude CCAR-F certification on my second attempt. These are sample questions I practised with, and questions like these may hit your exam. Each one has the answer and a short reason. Try each question first, then open the answer.</p>
+<p>The questions are grouped in three areas: a multi-agent research system, Claude Code in a CI/CD pipeline, and structured data extraction with tool use. After them come a cheat sheet to revise from and the anti-patterns that most wrong options are built on.</p>
+<ul class="jump" aria-label="On this page">
+<li><a href="#multi-agent">Sample questions</a></li>
+<li><a href="#cheat-sheet">Cheat sheet</a></li>
+<li><a href="#anti-patterns">Anti-patterns</a></li>
+<li><a href="#tips">What helped me pass</a></li>
+</ul>
 
 <h2 id="multi-agent">Multi-agent research system</h2>
 <p>Most of these questions use the same scenario: a coordinator agent with four subagents (web search, document analysis, synthesis and a report generator).</p>
@@ -232,6 +238,176 @@
 <p><strong>A.</strong> A few examples fix all three problems at once. A hard count (B) cuts real skills from long documents, and post-processing (C) can't remove skills the model invented.</p>
 </details>
 </div>
+
+<h2 id="cheat-sheet">Cheat sheet</h2>
+<p>The facts I kept coming back to while revising, one line each.</p>
+
+<div class="sheet">
+<section class="sheet__group" aria-labelledby="cs-api">
+<h3 id="cs-api">Messages API</h3>
+<dl>
+<dt>State</dt><dd>The API is stateless. Send the full conversation history, the system prompt and the tools on every request.</dd>
+<dt><code>system</code></dt><dd>A separate field, not a message. It sets the role, rules and output format for the whole conversation.</dd>
+<dt><code>stop_reason</code></dt><dd><code>tool_use</code>: run the tool and send back a <code>tool_result</code>. <code>end_turn</code>: done. <code>max_tokens</code>: the reply was cut off.</dd>
+<dt>Long inputs</dt><dd>Details in the middle of a long context get missed. Put key facts at the start or end, and trim tool results to the fields you need.</dd>
+</dl>
+</section>
+
+<section class="sheet__group" aria-labelledby="cs-tools">
+<h3 id="cs-tools">Tools and structured output</h3>
+<dl>
+<dt>Descriptions</dt><dd>Claude picks a tool by its description. Say what it does, what it returns, its input format and when to use it instead of a similar tool.</dd>
+<dt><code>tool_choice</code></dt><dd><code>auto</code>: Claude decides. <code>any</code>: some tool must be called. <code>{"type": "tool", "name": …}</code>: that tool must be called.</dd>
+<dt>JSON schema</dt><dd>A tool's input schema guarantees valid, well-formed JSON. It does not guarantee the values are right.</dd>
+<dt>Schema design</dt><dd>Make a field required only if every source has it. Otherwise make it nullable, or Claude will invent a value. Add <code>"other"</code> or <code>"unclear"</code> to enums.</dd>
+<dt>Semantic errors</dt><dd>Totals that don't add up, or values in the wrong field: catch them with validation, then retry with the specific error.</dd>
+</dl>
+</section>
+
+<section class="sheet__group" aria-labelledby="cs-agents">
+<h3 id="cs-agents">Agents and the Agent SDK</h3>
+<dl>
+<dt>Agentic loop</dt><dd>Call Claude, run the tools it asks for, append the results, repeat while <code>stop_reason</code> is <code>tool_use</code>.</dd>
+<dt>Hub and spoke</dt><dd>The coordinator splits the task, picks the subagents, passes context and collects results. Subagents never talk to each other.</dd>
+<dt>Subagent context</dt><dd>A subagent starts empty. Everything it needs goes in its prompt.</dd>
+<dt>Spawning</dt><dd>Subagents are started with the Agent tool (called Task in older versions). It must be in the coordinator's allowed tools. Several calls in one turn run in parallel.</dd>
+<dt>Tool scope</dt><dd>Give each agent only the 4–5 tools its role needs.</dd>
+<dt>Hooks</dt><dd><code>PreToolUse</code> can block or redirect a call. <code>PostToolUse</code> can rewrite a result. Use them for rules that must always hold.</dd>
+<dt>Sessions</dt><dd><code>--resume</code> continues a named session, and forking branches one. After files change, tell Claude what changed, or start fresh with a summary.</dd>
+</dl>
+</section>
+
+<section class="sheet__group" aria-labelledby="cs-mcp">
+<h3 id="cs-mcp">MCP</h3>
+<dl>
+<dt>Parts</dt><dd>Tools are actions, resources are data to read (schemas, catalogues, docs), and prompts are reusable templates.</dd>
+<dt>Config</dt><dd><code>.mcp.json</code> in the repo is shared with the team, with secrets as <code>${ENV_VAR}</code>. <code>~/.claude.json</code> is personal.</dd>
+<dt>Errors</dt><dd>Return <code>isError: true</code> with a category, a message and whether a retry makes sense. "Operation failed" tells the agent nothing.</dd>
+<dt>Build or reuse</dt><dd>Use existing servers for standard systems like GitHub or Jira. Build your own only for workflows unique to your team.</dd>
+</dl>
+</section>
+
+<section class="sheet__group" aria-labelledby="cs-code">
+<h3 id="cs-code">Claude Code</h3>
+<dl>
+<dt>CLAUDE.md</dt><dd><code>~/.claude/CLAUDE.md</code> is yours only. The project's <code>CLAUDE.md</code> or <code>.claude/CLAUDE.md</code> is shared through git. A <code>CLAUDE.md</code> in a subfolder applies to that folder.</dd>
+<dt>Imports</dt><dd><code>@path/to/file.md</code> pulls in another file. Relative paths resolve from the importing file.</dd>
+<dt>Rules</dt><dd><code>.claude/rules/*.md</code> with <code>paths:</code> globs load only for matching files, such as every test file across the repo.</dd>
+<dt>Skills</dt><dd><code>.claude/skills/&lt;name&gt;/SKILL.md</code> is shared, <code>~/.claude/skills/</code> is personal. <code>context: fork</code> runs one in a subagent, and <code>allowed-tools</code> limits its tools.</dd>
+<dt>Plan mode</dt><dd>For large, unclear or multi-file changes. Make small, clear fixes directly.</dd>
+<dt>CI</dt><dd><code>claude -p</code> runs without prompts. Add <code>--output-format json</code>, <code>--max-turns</code>, <code>--max-budget-usd</code> and <code>--allowedTools</code>, and use <code>--append-system-prompt</code> rather than <code>--system-prompt</code>.</dd>
+</dl>
+</section>
+
+<section class="sheet__group" aria-labelledby="cs-prompt">
+<h3 id="cs-prompt">Prompting and pipelines</h3>
+<dl>
+<dt>Few-shot</dt><dd>The fix when output is inconsistent or the inputs vary: 2–4 examples that show the format and the edge cases.</dd>
+<dt>Criteria</dt><dd>"Flag only issues that can cause a bug" beats "be thorough". Vague instructions give vague results.</dd>
+<dt>Chaining</dt><dd>Use fixed steps when the task is predictable, and let the coordinator decide when it isn't. Review big diffs per file, then once across the files.</dd>
+<dt>Retries</dt><dd>Retry with the exact error and they fix format mistakes. They can't add information the source doesn't have.</dd>
+</dl>
+</section>
+
+<section class="sheet__group" aria-labelledby="cs-batch">
+<h3 id="cs-batch">Message Batches API</h3>
+<dl>
+<dt>Trade-off</dt><dd>Half the price, but results can take up to 24 hours, with no latency guarantee.</dd>
+<dt>Use it for</dt><dd>Overnight and bulk jobs. Anything a person or a deadline is waiting on goes to the regular API.</dd>
+<dt><code>custom_id</code></dt><dd>Results come back in any order. Match them to requests with <code>custom_id</code>, and resubmit only the failures.</dd>
+<dt>Before a big batch</dt><dd>Test the prompt on a small sample with the regular API first.</dd>
+</dl>
+</section>
+
+<section class="sheet__group" aria-labelledby="cs-ops">
+<h3 id="cs-ops">Escalation, errors and context</h3>
+<dl>
+<dt>Escalate when</dt><dd>The customer asks for a human, policy doesn't cover the case, or the agent can't make progress.</dd>
+<dt>Handoff</dt><dd>Pass a structured summary (customer, issue, what was tried, what is needed) so the human doesn't start over.</dd>
+<dt>Subagent errors</dt><dd>Retry transient errors locally. Otherwise send the coordinator the error type, the partial results and whether to retry.</dd>
+<dt>Gaps</dt><dd>If a topic has no sources, say so in the report instead of leaving it out.</dd>
+<dt>Long sessions</dt><dd>Keep key facts (IDs, amounts, dates) in a block that is never summarised. Summaries blur numbers.</dd>
+</dl>
+</section>
+</div>
+
+<h2 id="anti-patterns">Anti-patterns</h2>
+<p>Most wrong options aren't random: they are real mistakes that sound reasonable. Learn to spot these and many questions become easy.</p>
+
+<ol class="traps">
+<li>
+<h3>Teaching tool order with examples</h3>
+<p class="traps__bad"><span>Trap</span>Few-shot examples or prompt rules to make sure <code>verify_identity</code> runs before <code>process_refund</code>.</p>
+<p class="traps__fix"><span>Fix</span>A hook or prerequisite check in code that blocks the second call until the first has succeeded.</p>
+</li>
+<li>
+<h3>Trusting the model's own confidence</h3>
+<p class="traps__bad"><span>Trap</span>Escalating when Claude says it is unsure, or filtering findings by a confidence score it reports.</p>
+<p class="traps__fix"><span>Fix</span>Objective triggers: a missing field, an amount over a limit, a policy gap, an explicit request for a human.</p>
+</li>
+<li>
+<h3>Escalating on sentiment</h3>
+<p class="traps__bad"><span>Trap</span>Routing to a human when the customer sounds angry.</p>
+<p class="traps__fix"><span>Fix</span>Escalate on what the case needs. An angry customer with a simple problem can still be helped by the agent.</p>
+</li>
+<li>
+<h3>Reading the reply to decide when to stop</h3>
+<p class="traps__bad"><span>Trap</span>Ending the loop when the text says "done", or after a fixed number of turns.</p>
+<p class="traps__fix"><span>Fix</span>Stop on <code>stop_reason == "end_turn"</code>. A turn cap is only a safety net.</p>
+</li>
+<li>
+<h3>Batching everything to save money</h3>
+<p class="traps__bad"><span>Trap</span>Sending urgent or interactive work to the Batches API for the discount.</p>
+<p class="traps__fix"><span>Fix</span>Batch only what can wait up to a day. Send the rest to the regular API.</p>
+</li>
+<li>
+<h3>A bigger context window for missed details</h3>
+<p class="traps__bad"><span>Trap</span>Switching to a model with a larger window when details in a long document get missed.</p>
+<p class="traps__fix"><span>Fix</span>Process the document in focused sections, then run one pass that combines the section results.</p>
+</li>
+<li>
+<h3>Every tool for every agent</h3>
+<p class="traps__bad"><span>Trap</span>Giving all agents all tools "for flexibility", including full web search for the synthesis agent.</p>
+<p class="traps__fix"><span>Fix</span>Give each role its own few tools. For a rare need, add one narrow tool or route it back through the coordinator.</p>
+</li>
+<li>
+<h3>Hiding failures</h3>
+<p class="traps__bad"><span>Trap</span>A failed subagent returns an empty result, so the coordinator can't tell "found nothing" from "couldn't look".</p>
+<p class="traps__fix"><span>Fix</span>Return an error with its type, the partial results and whether a retry makes sense.</p>
+</li>
+<li>
+<h3>One failure stops everything</h3>
+<p class="traps__bad"><span>Trap</span>A timeout in one subagent ends the whole workflow and throws away the finished work.</p>
+<p class="traps__fix"><span>Fix</span>Recover locally where possible. Otherwise report to the coordinator, which can retry, reroute or continue with a noted gap.</p>
+</li>
+<li>
+<h3>Required fields to force complete output</h3>
+<p class="traps__bad"><span>Trap</span>Marking every schema field required so nothing comes back empty.</p>
+<p class="traps__fix"><span>Fix</span>Make fields nullable where the source may not have the data. An honest null beats an invented value.</p>
+</li>
+<li>
+<h3>Prompt rules as security</h3>
+<p class="traps__bad"><span>Trap</span>A generic <code>fetch_url</code> tool plus "only fetch approved domains" in the prompt.</p>
+<p class="traps__fix"><span>Fix</span>A narrower tool that checks an allow-list itself, so the rule holds whatever the input says.</p>
+</li>
+<li>
+<h3>Guessing between matching records</h3>
+<p class="traps__bad"><span>Trap</span>A lookup returns two customers and the agent picks the most recent one.</p>
+<p class="traps__fix"><span>Fix</span>Ask for another identifier, such as an email or order number, before acting.</p>
+</li>
+<li>
+<h3>Trusting the overall accuracy number</h3>
+<p class="traps__bad"><span>Trap</span>Cutting human review because accuracy is 97% overall.</p>
+<p class="traps__fix"><span>Fix</span>Check accuracy per document type and field first. A small document type can fail badly inside a good average.</p>
+</li>
+<li>
+<h3>Resuming on stale results</h3>
+<p class="traps__bad"><span>Trap</span>Resuming a session after the code changed and expecting Claude to notice.</p>
+<p class="traps__fix"><span>Fix</span>Tell it which files changed, or start a new session with a summary of what was found.</p>
+</li>
+</ol>
+
+<p class="rule"><strong>The rule behind them all:</strong> when something must always happen, enforce it in code (hooks, schemas, <code>stop_reason</code>, allow-lists, explicit triggers), not with a prompt, examples or the model's own judgment.</p>
 
 <h2 id="tips">What helped me pass</h2>
 <ul>
