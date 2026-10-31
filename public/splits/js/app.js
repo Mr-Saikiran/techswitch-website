@@ -528,6 +528,10 @@
   // ---------- boot ----------
 
   $('#footer-channels').textContent = Object.values(WS.CHANNELS).map((c) => c.name).join(', ');
+  // Inside the Android / iOS app (Capacitor injects window.Capacitor): hide web-only bits.
+  if (window.Capacitor && window.Capacitor.isNativePlatform && window.Capacitor.isNativePlatform()) {
+    document.documentElement.classList.add('native');
+  }
   loadProfile();
   $('#profile-form').addEventListener('submit', (e) => { e.preventDefault(); run(); $('#results').scrollIntoView({ behavior: 'smooth', block: 'start' }); });
   $('#results').addEventListener('click', onResultsClick);

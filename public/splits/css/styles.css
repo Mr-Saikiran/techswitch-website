@@ -223,3 +223,9 @@ button.ex-name { background: none; border: none; padding: 0; font: inherit; font
 #ex-modal h2 { margin: 0; font-size: 20px; }
 #ex-modal p { font-size: 14px; }
 .modal-close { position: absolute; top: 12px; right: 12px; }
+
+/* Native apps: respect notches and system bars; hide web-only links */
+.site-header { padding-top: env(safe-area-inset-top); }
+.site-footer { padding-bottom: calc(32px + env(safe-area-inset-bottom)); }
+.wrap { padding-left: max(16px, env(safe-area-inset-left)); padding-right: max(16px, env(safe-area-inset-right)); }
+.native .web-only { display: none; }
