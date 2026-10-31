@@ -196,14 +196,30 @@ function rss(posts) {
   return `<?xml version="1.0" encoding="UTF-8"?><rss version="2.0" xmlns:content="http://purl.org/rss/1.0/modules/content/" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>TechSwitch blog</title><link>${SITE}/blogs/</link><description>Notes on DevSecOps, cloud and Python from TechSwitch.</description><language>en</language><atom:link href="${SITE}/blogs/rss.xml" rel="self" type="application/rss+xml"/>${items}</channel></rss>\n`;
 }
 
+// The post the home page leads with; the newest post when this one is gone.
+const FEATURED = 'claude-ccar-f-certification-sample-questions';
+
 function homeCards(posts) {
-  return `<ol class="posts">
-${posts.slice(0, 3).map((p) => `      <li class="post-card">
-        ${cover(p, 'cover', false)}
-        <time datetime="${iso(p.date)}">${day(p.date)}</time>
-        <h3><a href="/blogs/${p.slug}/">${esc(p.title)}</a></h3>
-      </li>`).join('\n')}
-    </ol>`;
+  const lead = posts.find((p) => p.slug === FEATURED) || posts[0];
+  const rest = posts.filter((p) => p !== lead).slice(0, 2);
+  return `<div class="writing">
+      <article class="feature">
+        ${cover(lead, 'feature__cover', false)}
+        <div class="feature__text">
+          <time datetime="${iso(lead.date)}">${day(lead.date)}</time>
+          <h3><a class="feature__link" href="/blogs/${lead.slug}/">${esc(lead.title)}</a></h3>
+          ${lead.brief ? `<p>${esc(lead.brief)}</p>` : ''}
+          <p class="feature__min">${lead.minutes} min read</p>
+        </div>
+      </article>
+      <ol class="writing__more">
+${rest.map((p) => `        <li class="post-card">
+          ${cover(p, 'cover', false)}
+          <time datetime="${iso(p.date)}">${day(p.date)}</time>
+          <h3><a href="/blogs/${p.slug}/">${esc(p.title)}</a></h3>
+        </li>`).join('\n')}
+      </ol>
+    </div>`;
 }
 
 const notFound = () => page({

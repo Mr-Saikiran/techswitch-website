@@ -78,52 +78,103 @@
     <div class="slider">
       <ol class="slides" id="work-slides" tabindex="0" aria-label="Projects">
         <li class="slide" id="work-cvtuner">
-          <figure class="slide__art"><img src="/img/work-cvtuner.png" width="1440" height="900" alt="CVTuner profile screen: your base resume and the sections you can show, hide and reorder" loading="lazy" decoding="async"></figure>
-          <div class="slide__text">
-            <h3><a href="/cvtuner">cvtuner</a></h3>
-            <p>Tune your resume to any job description, with an ATS check. PDF and Word, fitted to two pages.</p>
-            <p class="slide__stack">next.js, ai, browser extension</p>
-            <p class="slide__links"><a class="link" href="/cvtuner">open</a> <a class="link" href="https://github.com/Mr-Saikiran/cvtuner">source</a></p>
-          </div>
+          <article class="card">
+            <figure class="card__art"><img src="/img/work-cvtuner.png" width="1440" height="900" alt="CVTuner profile screen: your base resume and the sections you can show, hide and reorder" loading="lazy" decoding="async"></figure>
+            <div class="card__body">
+              <h3 class="card__title"><a class="card__link" href="/cvtuner">cvtuner</a></h3>
+              <p class="card__what">Tune your resume to any job description, with an ATS check. PDF and Word, fitted to two pages.</p>
+              <p class="card__meta"><span>next.js, ai, browser extension</span> <a class="link card__source" href="https://github.com/Mr-Saikiran/cvtuner">source</a></p>
+            </div>
+          </article>
         </li>
         <li class="slide" id="work-equity">
-          <figure class="slide__art slide__art--type" data-slot="work-equity" data-alt="Equity portfolio dashboard"><b>equity</b><span>portfolio, news and insights, with a copilot beside them</span></figure>
-          <div class="slide__text">
-            <h3><a href="/equity/">equity</a></h3>
-            <p>Zerodha portfolio dashboard with an AI copilot. Read-only, on your own keys.</p>
-            <p class="slide__stack">python, ai agents</p>
-            <p class="slide__links"><a class="link" href="/equity/">open</a> <a class="link" href="https://github.com/Mr-Saikiran/agentic-zerodha">source</a></p>
-          </div>
+          <article class="card">
+            <figure class="card__art card__art--type" data-slot="work-equity" data-alt="equity"><b>equity</b><span>portfolio, news and insights, with a copilot beside them</span></figure>
+            <div class="card__body">
+              <h3 class="card__title"><a class="card__link" href="/equity/">equity</a></h3>
+              <p class="card__what">Zerodha portfolio dashboard with an AI copilot. Read-only, on your own keys.</p>
+              <p class="card__meta"><span>python, ai agents</span> <a class="link card__source" href="https://github.com/Mr-Saikiran/agentic-zerodha">source</a></p>
+            </div>
+          </article>
         </li>
         <li class="slide" id="work-oursociety">
-          <figure class="slide__art"><img src="/img/work-oursociety.png" width="1440" height="900" alt="OurSociety read-only demo dashboard for a sample society: dues collected, announcements and who has paid" loading="lazy" decoding="async"></figure>
-          <div class="slide__text">
-            <h3><a href="/oursociety/">oursociety</a></h3>
-            <p>Housing-society app: dues, bills, accounting, notices and polls.</p>
-            <p class="slide__stack">next.js, android, ios</p>
-            <p class="slide__links"><a class="link" href="/oursociety/">open</a> <a class="link" href="https://github.com/Mr-Saikiran/oursociety-template">source</a></p>
-          </div>
+          <article class="card">
+            <figure class="card__art"><img src="/img/work-oursociety.png" width="1440" height="900" alt="OurSociety read-only demo dashboard for a sample society: dues collected, announcements and who has paid" loading="lazy" decoding="async"></figure>
+            <div class="card__body">
+              <h3 class="card__title"><a class="card__link" href="/oursociety/">oursociety</a></h3>
+              <p class="card__what">Housing-society app: dues, bills, accounting, notices and polls.</p>
+              <p class="card__meta"><span>next.js, android, ios</span> <a class="link card__source" href="https://github.com/Mr-Saikiran/oursociety-template">source</a></p>
+            </div>
+          </article>
         </li>
         <li class="slide" id="work-splits">
-          <figure class="slide__art"><img src="/img/work-splits.png" width="1440" height="900" alt="Workout Splits planner: profile form and the best-matching training splits with their research" loading="lazy" decoding="async"></figure>
-          <div class="slide__text">
-            <h3><a href="/splits/">workout splits</a></h3>
-            <p>Science-backed training split planner for your age, goal and body type, plus HIIT, yoga and Pilates.</p>
-            <p class="slide__stack">javascript, open source</p>
-            <p class="slide__links"><a class="link" href="/splits/">open</a> <a class="link" href="https://github.com/Mr-Saikiran/workout-splits">source</a></p>
-          </div>
+          <article class="card">
+            <div class="card__art card__art--samples">
+              <figure class="card__shot"><img src="/img/work-splits.png" width="1440" height="1300" alt="Workout planner: a profile, the best-matching splits and a week of training" loading="lazy" decoding="async"></figure>
+              <ul class="samples" aria-label="Samples from the workout planner">
+                <li><a class="sample" href="/splits/#exercises"><img src="/img/splits-exercises.png" width="720" height="450" alt="Top exercises by body area, each with a photo demo" loading="lazy" decoding="async"><span>exercises</span></a></li>
+                <li><a class="sample" href="/splits/#hiit"><img src="/img/splits-hiit.png" width="720" height="450" alt="HIIT and calisthenics interval protocols" loading="lazy" decoding="async"><span>hiit</span></a></li>
+                <li><a class="sample" href="/splits/#yoga"><img src="/img/splits-yoga.png" width="720" height="450" alt="Yoga routines for lifters, with the poses in each" loading="lazy" decoding="async"><span>yoga</span></a></li>
+              </ul>
+            </div>
+            <div class="card__body">
+              <h3 class="card__title"><a class="card__link" href="/splits/">workout planner</a></h3>
+              <p class="card__what">Science-backed training splits for your age, goal and body type, with exercise demos, HIIT, yoga and Pilates.</p>
+              <p class="card__meta"><span>javascript, open source</span> <a class="link card__source" href="https://github.com/Mr-Saikiran/workout-splits">source</a></p>
+            </div>
+          </article>
         </li>
         <li class="slide" id="work-upihub">
-          <figure class="slide__art"><img src="/img/upihub-feature.png" width="1024" height="500" alt="UPI Hub: one scanner for all your UPI apps. Pick, pay, done." loading="lazy" decoding="async"></figure>
-          <div class="slide__text">
-            <h3><a href="/upihub/">upi hub</a></h3>
-            <p>Android and iPhone app: scan any UPI QR, pay with the app you choose.</p>
-            <p class="slide__stack">kotlin, swiftui</p>
-            <p class="slide__links"><a class="link" href="/upihub/">open</a> <a class="link" href="https://github.com/Mr-Saikiran/upihub">source</a></p>
-          </div>
+          <article class="card">
+            <figure class="card__art card__art--center"><img src="/img/upihub-feature.png" width="1024" height="500" alt="UPI Hub: one scanner for all your UPI apps. Pick, pay, done." loading="lazy" decoding="async"></figure>
+            <div class="card__body">
+              <h3 class="card__title"><a class="card__link" href="/upihub/">upi hub</a></h3>
+              <p class="card__what">Android and iPhone app: scan any UPI QR, pay with the app you choose.</p>
+              <p class="card__meta"><span>kotlin, swiftui</span> <a class="link card__source" href="https://github.com/Mr-Saikiran/upihub">source</a></p>
+            </div>
+          </article>
         </li>
       </ol>
     </div>
+    <div class="pager" role="group" aria-label="Jump to a project">
+      <button type="button" data-goto="0" aria-current="true">cvtuner</button>
+      <button type="button" data-goto="1">equity</button>
+      <button type="button" data-goto="2">oursociety</button>
+      <button type="button" data-goto="3">workout planner</button>
+      <button type="button" data-goto="4">upi hub</button>
+    </div>
+  </section>
+
+  <section class="container section" id="writing" aria-labelledby="writing-title">
+    <div class="head">
+      <h2 id="writing-title">notes from the pipeline</h2>
+      <a class="link head__more" href="/blogs/">all posts</a>
+    </div>
+    <!-- posts:start -->
+    <div class="writing">
+      <article class="feature">
+        <figure class="feature__cover cover--whole" data-slot="cover-claude-ccar-f-certification-sample-questions" data-alt="Cover for Claude CCAR-F Certification: High Probability Questions, Cheat Sheet and Anti-Patterns"><img src="/img/ccar-f-badge.webp" alt="" width="1600" height="900" loading="lazy"></figure>
+        <div class="feature__text">
+          <time datetime="2026-10-31">31 oct 2026</time>
+          <h3><a class="feature__link" href="/blogs/claude-ccar-f-certification-sample-questions/">Claude CCAR-F Certification: High Probability Questions, Cheat Sheet and Anti-Patterns</a></h3>
+          <p>16 sample questions with answers, a one-page cheat sheet and the anti-patterns behind most wrong options. These may hit your CCAR-F exam: I cleared it on my second attempt.</p>
+          <p class="feature__min">23 min read</p>
+        </div>
+      </article>
+      <ol class="writing__more">
+        <li class="post-card">
+          <figure class="cover" data-slot="cover-part-2-artifacts-attestation-for-builds-in-github-actions" data-alt="Cover for Part 2 - Artifacts Attestation for Builds in Github Actions"><img src="https://cdn.hashnode.com/res/hashnode/image/upload/v1719431048546/3a71e2da-53f9-4e41-8aba-4bd5ff2e33a1.jpeg?w=1600&amp;auto=compress,format" alt="" width="1600" height="900" loading="lazy"></figure>
+          <time datetime="2023-11-03">3 nov 2023</time>
+          <h3><a href="/blogs/part-2-artifacts-attestation-for-builds-in-github-actions/">Part 2 - Artifacts Attestation for Builds in Github Actions</a></h3>
+        </li>
+        <li class="post-card">
+          <figure class="cover" data-slot="cover-cache-docker-python-javamaven-nodenpm-go-modules-in-github-actions" data-alt="Cover for Part 1 - Cache Docker, Python, Java(Maven), Node(npm), Go Modules in Github Actions"><img src="https://cdn.hashnode.com/res/hashnode/image/upload/v1719430177660/a66047c7-a495-4b2f-bfef-54aa42a437c8.jpeg?w=1600&amp;auto=compress,format" alt="" width="1600" height="900" loading="lazy"></figure>
+          <time datetime="2023-05-11">11 may 2023</time>
+          <h3><a href="/blogs/cache-docker-python-javamaven-nodenpm-go-modules-in-github-actions/">Part 1 - Cache Docker, Python, Java(Maven), Node(npm), Go Modules in Github Actions</a></h3>
+        </li>
+      </ol>
+    </div>
+    <!-- posts:end -->
   </section>
 
   <section class="container case" id="upihub" aria-labelledby="upihub-title">
@@ -241,31 +292,6 @@
     </ol>
   </section>
 
-  <section class="container section" id="writing" aria-labelledby="writing-title">
-    <div class="head">
-      <h2 id="writing-title">notes from the pipeline</h2>
-      <a class="link head__more" href="/blogs/">all posts</a>
-    </div>
-    <!-- posts:start -->
-    <ol class="posts">
-      <li class="post-card">
-        <figure class="cover cover--whole" data-slot="cover-claude-ccar-f-certification-sample-questions" data-alt="Cover for Claude CCAR-F Certification: High Probability Questions, Cheat Sheet and Anti-Patterns"><img src="/img/ccar-f-badge.webp" alt="" width="1600" height="900" loading="lazy"></figure>
-        <time datetime="2026-10-31">31 oct 2026</time>
-        <h3><a href="/blogs/claude-ccar-f-certification-sample-questions/">Claude CCAR-F Certification: High Probability Questions, Cheat Sheet and Anti-Patterns</a></h3>
-      </li>
-      <li class="post-card">
-        <figure class="cover" data-slot="cover-part-2-artifacts-attestation-for-builds-in-github-actions" data-alt="Cover for Part 2 - Artifacts Attestation for Builds in Github Actions"><img src="https://cdn.hashnode.com/res/hashnode/image/upload/v1719431048546/3a71e2da-53f9-4e41-8aba-4bd5ff2e33a1.jpeg?w=1600&amp;auto=compress,format" alt="" width="1600" height="900" loading="lazy"></figure>
-        <time datetime="2023-11-03">3 nov 2023</time>
-        <h3><a href="/blogs/part-2-artifacts-attestation-for-builds-in-github-actions/">Part 2 - Artifacts Attestation for Builds in Github Actions</a></h3>
-      </li>
-      <li class="post-card">
-        <figure class="cover" data-slot="cover-cache-docker-python-javamaven-nodenpm-go-modules-in-github-actions" data-alt="Cover for Part 1 - Cache Docker, Python, Java(Maven), Node(npm), Go Modules in Github Actions"><img src="https://cdn.hashnode.com/res/hashnode/image/upload/v1719430177660/a66047c7-a495-4b2f-bfef-54aa42a437c8.jpeg?w=1600&amp;auto=compress,format" alt="" width="1600" height="900" loading="lazy"></figure>
-        <time datetime="2023-05-11">11 may 2023</time>
-        <h3><a href="/blogs/cache-docker-python-javamaven-nodenpm-go-modules-in-github-actions/">Part 1 - Cache Docker, Python, Java(Maven), Node(npm), Go Modules in Github Actions</a></h3>
-      </li>
-    </ol>
-    <!-- posts:end -->
-  </section>
 
   <section class="record" id="contact" aria-labelledby="contact-title">
     <div class="container record__grid">
@@ -305,28 +331,33 @@
 <!-- /chrome:footer -->
 
 <script>
-// work slider: the buttons step one banner at a time and switch off at either end
+// work slider: previous and next step one card at a time and switch off at either end;
+// the names under it jump straight to a card and show which one is in view
 (() => {
   const rail = document.getElementById('work-slides');
   if (!rail) return;
   const buttons = [...document.querySelectorAll('[data-slide]')];
+  const names = [...document.querySelectorAll('[data-goto]')];
   const slides = [...rail.querySelectorAll('.slide')];
   const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
-  const pad = () => parseFloat(getComputedStyle(rail).paddingLeft) || 0;
   const offset = (s) => s.offsetLeft - slides[0].offsetLeft;
   const current = () => slides.reduce((best, s, i) => (Math.abs(offset(s) - rail.scrollLeft) < Math.abs(offset(slides[best]) - rail.scrollLeft) ? i : best), 0);
   const sync = () => {
     const end = rail.scrollWidth - rail.clientWidth - 2;
     buttons.forEach((b) => { b.disabled = b.dataset.slide === '-1' ? rail.scrollLeft <= 2 : rail.scrollLeft >= end; });
+    const at = rail.scrollLeft >= end ? slides.length - 1 : current();
+    names.forEach((n, i) => n.setAttribute('aria-current', String(i === at)));
   };
-  buttons.forEach((b) => b.addEventListener('click', () => {
-    const i = Math.max(0, Math.min(slides.length - 1, current() + Number(b.dataset.slide)));
+  const go = (i) => {
+    i = Math.max(0, Math.min(slides.length - 1, i));
     const left = offset(slides[i]);
     const from = rail.scrollLeft;
     rail.scrollTo({ left, behavior: reduce ? 'auto' : 'smooth' });
     // some browsers ignore smooth scrolling here; land on the slide anyway
     setTimeout(() => { if (Math.abs(rail.scrollLeft - from) < 1 && Math.abs(left - from) > 1) rail.scrollLeft = left; sync(); }, 450);
-  }));
+  };
+  buttons.forEach((b) => b.addEventListener('click', () => go(current() + Number(b.dataset.slide))));
+  names.forEach((n) => n.addEventListener('click', () => go(Number(n.dataset.goto))));
   rail.addEventListener('scroll', sync, { passive: true });
   rail.addEventListener('scrollend', sync);
   addEventListener('resize', sync);
